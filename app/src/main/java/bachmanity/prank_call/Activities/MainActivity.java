@@ -97,7 +97,11 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.login_text)
     public void onClick() {
-
+        drawer.closeDrawer(GravityCompat.START);
+        Intent intent = new Intent(this, RegisterActivity.class);
+        startActivity(intent);
+        //Need noanim translation since there's a default animation
+        //overridePendingTransition(R.anim.slideleftin, R.anim.noanim);
     }
 
     @Override
