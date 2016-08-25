@@ -1,14 +1,8 @@
 package bachmanity.prank_call.Activities;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.Preference;
-import android.preference.PreferenceManager;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.view.View;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -28,7 +22,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
-import butterknife.OnItemSelected;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -55,10 +48,10 @@ public class MainActivity extends AppCompatActivity {
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        if (!SPSingleton.getInstance(this).getSp().getBoolean(Constants.firstTime, false)) {
-            SPSingleton.getInstance(this).getSp().edit().putBoolean(Constants.firstTime, true).commit();
+        if (!SPSingleton.getInstance(this).getSp().getBoolean(Constants.FIRST_TIME, false)) {
+            SPSingleton.getInstance(this).getSp().edit().putBoolean(Constants.FIRST_TIME, true).commit();
             Intent intent = new Intent(this, RegisterActivity.class);
-            intent.putExtra(Constants.firstTime, true);
+            intent.putExtra(Constants.FIRST_TIME, true);
             startActivity(intent);
         }
     }
