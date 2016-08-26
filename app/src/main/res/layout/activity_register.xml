@@ -16,7 +16,7 @@
         android:textSize="16sp"
         android:hint="@string/phone_num_hint"
         android:maxLength="10"
-        android:id="@+id/phone"
+        android:id="@+id/phoneNumber"
         android:inputType="phone"
         android:digits="0123456789+"
         android:layout_alignParentTop="true" />
@@ -27,7 +27,7 @@
         android:textSize="16sp"
         android:hint="@string/password"
         android:id="@+id/password"
-        android:layout_below="@+id/phone"
+        android:layout_below="@+id/phoneNumber"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
