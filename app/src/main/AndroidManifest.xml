@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="bachmanity.prank_call">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".Misc.MyApplication"
         android:allowBackup="true"

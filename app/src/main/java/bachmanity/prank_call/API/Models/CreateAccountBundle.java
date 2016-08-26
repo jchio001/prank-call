@@ -15,6 +15,11 @@ public class CreateAccountBundle {
     @Expose
     private String password;
 
+    public CreateAccountBundle(String password, String number) {
+        this.password = password;
+        this.number = number;
+    }
+
     public String getNumber() {
         return number;
     }

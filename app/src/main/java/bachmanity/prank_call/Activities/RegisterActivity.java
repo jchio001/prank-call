@@ -9,6 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import bachmanity.prank_call.API.Models.CreateAccountBundle;
 import bachmanity.prank_call.API.RetrofitSingleton;
@@ -30,15 +31,14 @@ public class RegisterActivity extends AppCompatActivity {
     @Bind(R.id.phoneNumber) TextView phoneNumber;
 
     boolean isFirstTime = false;
-    CreateAccountBundle createAccountBundle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         ButterKnife.bind(this);
-        EventBus.getDefault().register(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        EventBus.getDefault().register(this);
         Intent intent = this.getIntent();
         isFirstTime = intent.getBooleanExtra(Constants.FIRST_TIME, false);
         if (isFirstTime) {
@@ -60,15 +60,16 @@ public class RegisterActivity extends AppCompatActivity {
         }
         else {
             //Toast.makeText(this, getMD5Hash(enteredPass), Toast.LENGTH_SHORT).show();
-            createAccountBundle.setNumber(phoneNumber.getText().toString());
-            createAccountBundle.setPassword(enteredPass);
             Callback callback = new CreateAccountCallback();
-            RetrofitSingleton.getInstance().getUserService().createAccount(createAccountBundle).enqueue(callback);
+            RetrofitSingleton.getInstance().getUserService().
+                    createAccount(new CreateAccountBundle(phoneNumber.getText().toString(), enteredPass))
+                    .enqueue(callback);
         }
 
     }
 
-    public void onEvent(int id) {
+    @Subscribe
+    public void onEvent(Integer id) {
         if (id > 0) {
             Toast.makeText(this, "Success!", Toast.LENGTH_SHORT).show();
         }
