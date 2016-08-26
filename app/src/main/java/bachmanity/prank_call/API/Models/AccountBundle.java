@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by Jonathan Chiou on 8/26/2016.
  */
-public class CreateAccountBundle {
+public class AccountBundle {
     @SerializedName("phone_number")
     @Expose
     private String number;
@@ -15,7 +15,7 @@ public class CreateAccountBundle {
     @Expose
     private String password;
 
-    public CreateAccountBundle(String password, String number) {
+    public AccountBundle(String password, String number) {
         this.password = password;
         this.number = number;
     }

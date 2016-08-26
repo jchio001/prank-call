@@ -12,7 +12,6 @@ import retrofit2.Response;
  * Created by Jonathan Chiou on 8/26/2016.
  */
 public class CreateAccountCallback implements Callback<UserId> {
-    private UserId user;
 
     @Override
     public void onResponse(Call<UserId> call, Response<UserId> response) {

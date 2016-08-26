@@ -1,6 +1,7 @@
 package bachmanity.prank_call.API.Services;
 
-import bachmanity.prank_call.API.Models.CreateAccountBundle;
+import bachmanity.prank_call.API.Models.AccountBundle;
+import bachmanity.prank_call.API.Models.LoginRespBundle;
 import bachmanity.prank_call.API.Models.UserId;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -11,5 +12,8 @@ import retrofit2.http.POST;
  */
 public interface UserService {
     @POST("/createAccount")
-    Call<UserId> createAccount(@Body CreateAccountBundle createAccountBundle);
+    Call<UserId> createAccount(@Body AccountBundle accountBundle);
+
+    @POST("/login")
+    Call<LoginRespBundle> login(@Body AccountBundle accountBundle);
 }

@@ -11,7 +11,7 @@ import android.widget.Toast;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import bachmanity.prank_call.API.Models.CreateAccountBundle;
+import bachmanity.prank_call.API.Models.AccountBundle;
 import bachmanity.prank_call.API.RetrofitSingleton;
 import bachmanity.prank_call.API.Services.Callbacks.CreateAccountCallback;
 import bachmanity.prank_call.Misc.Constants;
@@ -21,8 +21,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import retrofit2.Callback;
-
-import static bachmanity.prank_call.Misc.Utils.getMD5Hash;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -62,7 +60,7 @@ public class RegisterActivity extends AppCompatActivity {
             //Toast.makeText(this, getMD5Hash(enteredPass), Toast.LENGTH_SHORT).show();
             Callback callback = new CreateAccountCallback();
             RetrofitSingleton.getInstance().getUserService().
-                    createAccount(new CreateAccountBundle(phoneNumber.getText().toString(), enteredPass))
+                    createAccount(new AccountBundle(phoneNumber.getText().toString(), enteredPass))
                     .enqueue(callback);
         }
 
