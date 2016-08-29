@@ -1,5 +1,7 @@
 package bachmanity.prank_call.API.Services.Callbacks;
 
+import android.provider.ContactsContract;
+
 import org.greenrobot.eventbus.EventBus;
 
 import bachmanity.prank_call.Misc.APIConstants;
@@ -19,6 +21,9 @@ public class CallCallback implements Callback<Void> {
         switch (response.code()) {
             case APIConstants.HTTP_STATUS_OK:
                 EventBus.getDefault().post(Constants.MADE_CALL);
+                break;
+            default:
+                EventBus.getDefault().post(Constants.CALL_NOT_MADE);
                 break;
         }
     }

@@ -11,13 +11,13 @@ public class CallBundle {
     @Expose
     private String receiverNumber;
 
-    @SerializedName("password")
-    @Expose
-    private String password;
-
     @SerializedName("id")
     @Expose
     private String id;
+
+    @SerializedName("password")
+    @Expose
+    private String password;
 
     public String getReceiverNumber() {
         return receiverNumber;

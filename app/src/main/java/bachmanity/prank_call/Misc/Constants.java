@@ -15,6 +15,7 @@ public class Constants {
     public static final String REGISTERING = "Registering...";
     public static final String LOGGING_IN = "Logging in...";
     public static final String MADE_CALL = "A call has been made!";
+    public static final String CALL_NOT_MADE = "Unable to make call. Try again later.";
 
     public static final String LOGIN_FAILURE = "Invalid number and/or password";
     public static final String REGISTER_FAILURE = "Number already exists in the system";

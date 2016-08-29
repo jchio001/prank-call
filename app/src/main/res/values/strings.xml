@@ -3,12 +3,14 @@
     <string name="home">Home</string>
     <string name="register">Register</string>
     <string name="history">History</string>
-    <string name="phone_num_hint">Enter in your phone number.</string>
+    <string name="phone_num_hint">Enter in your phone number</string>
     <string name="password">Password</string>
     <string name="logout">Logout</string>
     <string name="login">Login</string>
     <string name="no_account">Don\'t have an account? Enter in your phone number and password and hit register to register now!
     </string>
+    <string name="receiver_num_hint">Enter in a number to receive a call</string>
+    <string name="call">Call</string>
 
     <string-array name="main_icon_array">
         <item>@string/fa_icon_home</item>
