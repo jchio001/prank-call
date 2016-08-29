@@ -15,11 +15,24 @@ public class LoginRespBundle {
     @Expose
     private boolean account_active;
 
+    public LoginRespBundle(int id, boolean account_active) {
+        this.id = id;
+        this.account_active = account_active;
+    }
+
     public int getId() {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public boolean isAccount_active() {
         return account_active;
+    }
+
+    public void setAccount_active(boolean account_active) {
+        this.account_active = account_active;
     }
 }

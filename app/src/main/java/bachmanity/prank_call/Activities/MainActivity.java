@@ -2,6 +2,7 @@ package bachmanity.prank_call.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.view.View;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -12,11 +13,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import bachmanity.prank_call.Adapters.NavDrawerAdapter;
 import bachmanity.prank_call.Misc.Constants;
 import bachmanity.prank_call.Misc.SPSingleton;
+import bachmanity.prank_call.Misc.SnackbarHelper;
+import bachmanity.prank_call.Misc.Utils;
 import bachmanity.prank_call.R;
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -28,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.toolbar) Toolbar toolbar;
     @Bind(R.id.drawer_layout) DrawerLayout drawer;
     @Bind(R.id.main_list_view) ListView mainList;
+    @Bind(R.id.main_layout) CoordinatorLayout mainLayout;
+    @Bind(R.id.login_text) TextView loginText;
 
     View lastSelectedView = null;
     NavDrawerAdapter adapter;
@@ -52,8 +58,14 @@ public class MainActivity extends AppCompatActivity {
             SPSingleton.getInstance(this).getSp().edit().putBoolean(Constants.FIRST_TIME, true).commit();
             Intent intent = new Intent(this, RegisterActivity.class);
             intent.putExtra(Constants.FIRST_TIME, true);
-            startActivity(intent);
+            startActivityForResult(intent, 1);
+            return;
         }
+
+        if (Utils.getId(this) != -1) {
+            loginText.setText(getString(R.string.logout));
+        }
+
     }
 
     @Override
@@ -89,12 +101,31 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.login_text)
-    public void onClick() {
-        drawer.closeDrawer(GravityCompat.START);
-        Intent intent = new Intent(this, RegisterActivity.class);
-        startActivity(intent);
-        //Need noanim translation since there's a default animation
-        //overridePendingTransition(R.anim.slideleftin, R.anim.noanim);
+    public void onClick(TextView v) {
+        if (v.getText().toString().equals(getString(R.string.login))) {
+            drawer.closeDrawer(GravityCompat.START);
+            Intent intent = new Intent(this, RegisterActivity.class);
+            startActivityForResult(intent, 1);
+        }
+        else if (v.getText().toString().equals(getString(R.string.logout))) {
+            drawer.closeDrawer(GravityCompat.START);
+            Utils.saveId(-1, this);
+            v.setText(getString(R.string.login));
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+                int id = intent.getIntExtra(Constants.ID, -1);
+                if (id != -1) {
+                    Utils.saveId(id, this);
+                    loginText.setText(getString(R.string.logout));
+                }
+            }
+        }
     }
 
     @Override

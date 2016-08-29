@@ -15,9 +15,9 @@ public class AccountBundle {
     @Expose
     private String password;
 
-    public AccountBundle(String password, String number) {
-        this.password = password;
+    public AccountBundle(String number, String password) {
         this.number = number;
+        this.password = password;
     }
 
     public String getNumber() {

@@ -22,7 +22,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".Activities.RegisterActivity"
-            android:label="@string/register"></activity>
+            android:label="@string/login"></activity>
     </application>
 
 </manifest>
