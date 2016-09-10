@@ -1,5 +1,6 @@
 package bachmanity.prank_call.Activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -12,10 +13,19 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
+import bachmanity.prank_call.API.Models.CallBundle;
+import bachmanity.prank_call.API.RetrofitSingleton;
+import bachmanity.prank_call.API.Services.Callbacks.CallCallback;
 import bachmanity.prank_call.Adapters.NavDrawerAdapter;
 import bachmanity.prank_call.Misc.Constants;
 import bachmanity.prank_call.Misc.SPSingleton;
@@ -34,9 +44,13 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.main_list_view) ListView mainList;
     @Bind(R.id.main_layout) CoordinatorLayout mainLayout;
     @Bind(R.id.login_text) TextView loginText;
+    @Bind(R.id.phoneNumEditText) EditText numberToCall;
+    @Bind(R.id.call) Button call;
+    @Bind(R.id.adView) AdView adView;
 
     View lastSelectedView = null;
     NavDrawerAdapter adapter;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +64,13 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(getString(R.string.home));
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
+
+            @Override
+            public void onDrawerStateChanged(int state) {
+                Utils.hideKeyboard(mainLayout, getApplicationContext());
+            }
+        };
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
@@ -61,6 +81,28 @@ public class MainActivity extends AppCompatActivity {
             startActivityForResult(intent, 1);
             return;
         }
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage(getString(R.string.loading));
+        progressDialog.show();
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
+        adView.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                progressDialog.dismiss();
+                super.onAdLoaded();
+            }
+
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                progressDialog.dismiss();
+                super.onAdFailedToLoad(errorCode);
+            }
+
+        });
 
         if (Utils.getId(this) != -1) {
             loginText.setText(getString(R.string.logout));
@@ -114,6 +156,23 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @OnClick(R.id.call)
+    public void onCall() {
+        String number = numberToCall.getText().toString();
+
+        if (number.length() < 10) {
+            SnackbarHelper.showSnackbar(this, mainLayout, Constants.INVALID_NUMBER);
+        }
+
+        CallBundle callBundle = new CallBundle(number, Utils.getId(this), Constants.PASSWORD);
+        CallCallback callback = new CallCallback();
+
+        Utils.hideKeyboard(mainLayout, this);
+//        RetrofitSingleton.getInstance().getMatchingService()
+//                .call(callBundle).
+//                enqueue(callback);
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
@@ -122,6 +181,7 @@ public class MainActivity extends AppCompatActivity {
                 int id = intent.getIntExtra(Constants.ID, -1);
                 if (id != -1) {
                     Utils.saveId(id, this);
+                    Utils.savePassword(intent.getStringExtra(Constants.PASSWORD), this);
                     loginText.setText(getString(R.string.logout));
                 }
             }

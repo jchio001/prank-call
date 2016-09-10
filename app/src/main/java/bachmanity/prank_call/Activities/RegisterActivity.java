@@ -9,6 +9,10 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -31,9 +35,11 @@ public class RegisterActivity extends AppCompatActivity {
     @Bind(R.id.parent) View parent;
     @Bind(R.id.password) TextView password;
     @Bind(R.id.phoneNumber) TextView phoneNumber;
+    @Bind(R.id.registerAdView) AdView adView;
 
     ProgressDialog  progressDialog;
     boolean isFirstTime = false;
+    String encryptedPass;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +47,29 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
         ButterKnife.bind(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage(getString(R.string.loading));
+        progressDialog.show();
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
+        adView.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                progressDialog.dismiss();
+                super.onAdLoaded();
+            }
+
+            @Override
+            public void onAdFailedToLoad(int statusCode) {
+                progressDialog.dismiss();
+                super.onAdFailedToLoad(statusCode);
+            }
+        });
+
+
         EventBus.getDefault().register(this);
         Intent intent = this.getIntent();
         isFirstTime = intent.getBooleanExtra(Constants.FIRST_TIME, false);
@@ -48,6 +77,7 @@ public class RegisterActivity extends AppCompatActivity {
             getSupportActionBar().setTitle(getString(R.string.register));
             SnackbarHelper.showSnackbar(this, parent, Constants.FIRST_TIME_MSG);
         }
+
     }
 
     @Override
@@ -61,7 +91,7 @@ public class RegisterActivity extends AppCompatActivity {
         String number = phoneNumber.getText().toString();
         String enteredPass = password.getText().toString();
         if (number.length() < 10) {
-            SnackbarHelper.showSnackbar(this, parent, Constants.NUMBER_INVALID);
+            SnackbarHelper.showSnackbar(this, parent, Constants.INVALID_NUMBER);
             return;
         }
         if (enteredPass.length() < 8) {
@@ -72,24 +102,23 @@ public class RegisterActivity extends AppCompatActivity {
             Utils.hideKeyboard(parent, this);
             progressDialog = new ProgressDialog(this);
             progressDialog.setCancelable(false);
+            encryptedPass = Utils.getMD5Hash(enteredPass);
             if (v.getId() == R.id.register_button1) {
                 progressDialog.setMessage(Constants.REGISTERING);
                 progressDialog.show();
                 Callback callback = new CreateAccountCallback();
                 RetrofitSingleton.getInstance().getUserService()
-                        .createAccount(new AccountBundle(number, Utils.getMD5Hash(enteredPass)))
+                        .createAccount(new AccountBundle(number, encryptedPass))
                         .enqueue(callback);
-            }
-            else if (v.getId() == R.id.login_button) {
+            } else if (v.getId() == R.id.login_button) {
                 progressDialog.setMessage(Constants.LOGGING_IN);
                 progressDialog.show();
                 Callback callback = new LoginCallback();
                 RetrofitSingleton.getInstance().getUserService()
-                        .login(new AccountBundle(number, Utils.getMD5Hash(enteredPass)))
+                        .login(new AccountBundle(number, encryptedPass))
                         .enqueue(callback);
             }
         }
-
     }
 
     @Subscribe
@@ -111,6 +140,7 @@ public class RegisterActivity extends AppCompatActivity {
         if (id > 0) {
             Intent intent = new Intent();
             intent.putExtra(Constants.ID, id);
+            intent.putExtra(Constants.PASSWORD, encryptedPass);
             setResult(RESULT_OK, intent);
             finish();
         }

@@ -11,6 +11,7 @@
     </string>
     <string name="receiver_num_hint">Enter in a number to receive a call</string>
     <string name="call">Call</string>
+    <string name="loading">Loading...</string>
 
     <string-array name="main_icon_array">
         <item>@string/fa_icon_home</item>
@@ -26,4 +27,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+
+    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="register_ad_unit_id">ca-app-pub-3366431309616914/3173585580</string>
 </resources>

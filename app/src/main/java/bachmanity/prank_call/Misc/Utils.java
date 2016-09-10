@@ -8,6 +8,8 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import bachmanity.prank_call.R;
+
 /**
  * Created by Jonathan Chiou on 8/25/2016.
  */
@@ -40,5 +42,13 @@ public class Utils {
 
     public static void saveId(int id, Context context) {
         SPSingleton.getInstance(context).getSp().edit().putInt(Constants.ID, id).commit();
+    }
+
+    public static String getPassword(Context context) {
+        return SPSingleton.getInstance(context).getSp().getString(Constants.PASSWORD, "");
+    }
+
+    public static void savePassword(String password, Context context) {
+        SPSingleton.getInstance(context).getSp().edit().putString(Constants.PASSWORD, password);
     }
 }

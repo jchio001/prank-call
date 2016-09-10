@@ -10,5 +10,5 @@ import retrofit2.http.POST;
  */
 public interface MatchingService {
     @POST("/call/")
-    Call<Void> sendRequest(@Body CallBundle callBundle);
+    Call<Void> call(@Body CallBundle callBundle);
 }

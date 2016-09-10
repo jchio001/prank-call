@@ -13,11 +13,17 @@ public class CallBundle {
 
     @SerializedName("id")
     @Expose
-    private String id;
+    private int id;
 
     @SerializedName("password")
     @Expose
     private String password;
+
+    public CallBundle(String receiverNumber, int id, String password) {
+        this.receiverNumber = receiverNumber;
+        this.id = id;
+        this.password = password;
+    }
 
     public String getReceiverNumber() {
         return receiverNumber;
@@ -35,11 +41,11 @@ public class CallBundle {
         this.password = password;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 }
