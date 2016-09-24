@@ -1,12 +1,21 @@
 package bachmanity.prank_call.Misc;
 
 import android.content.Context;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+import android.telephony.TelephonyManager;
+import android.text.format.Formatter;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import java.math.BigInteger;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Enumeration;
 
 import bachmanity.prank_call.R;
 
@@ -36,6 +45,37 @@ public class Utils {
         return hashtext;
     }
 
+    public static String getIPAddr(Context context) {
+        WifiManager wm = (WifiManager) context.getSystemService(context.WIFI_SERVICE);
+        String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
+        if (ip.equals("0.0.0.0")) {
+            try {
+                for (Enumeration<NetworkInterface> en = NetworkInterface
+                        .getNetworkInterfaces(); en.hasMoreElements(); ) {
+                    NetworkInterface intf = en.nextElement();
+                    for (Enumeration<InetAddress> enumIpAddr = intf
+                            .getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
+                        InetAddress inetAddress = enumIpAddr.nextElement();
+                        if (!inetAddress.isLoopbackAddress()) {
+                            String ipaddress = inetAddress.getHostAddress().toString();
+                            return ipaddress;
+                        }
+                    }
+                }
+            } catch (SocketException ex) {
+                Log.e("GetIP", "Exception in Get IP Address: " + ex.toString());
+            }
+            return null;
+        }
+
+        return ip;
+    }
+
+    public static String getDevicePhoneNumber(Context context) {
+        return ((TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE))
+                .getLine1Number();
+    }
+
     public static int getId(Context context) {
         return SPSingleton.getInstance(context).getSp().getInt(Constants.ID, -1);
     }
@@ -49,6 +89,18 @@ public class Utils {
     }
 
     public static void savePassword(String password, Context context) {
-        SPSingleton.getInstance(context).getSp().edit().putString(Constants.PASSWORD, password);
+        SPSingleton.getInstance(context).getSp().edit().putString(Constants.PASSWORD, password).commit();
     }
+
+    public static String getPhoneNumber(Context context) {
+        return SPSingleton.getInstance(context).getSp().getString(Constants.NUMBER, "");
+    }
+
+    public static void savePhoneNumber(String number, Context context) {
+        SPSingleton.getInstance(context).getSp().edit().putString(Constants.NUMBER, number).commit();
+    }
+
+    /*public  static void changeActiveness(boolean account_active, Context context) {
+
+    }*/
 }

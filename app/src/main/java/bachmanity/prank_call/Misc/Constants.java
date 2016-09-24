@@ -6,9 +6,14 @@ package bachmanity.prank_call.Misc;
 public class Constants {
     public static final String ID = "id";
     public static final String PASSWORD = "password";
+    public static final String NUMBER = "number";
+    public static final String ACCOUNT_ACTIVE = "account_active";
     public static final String FIRST_TIME = "first_time";
     public static final String FIRST_TIME_MSG = "Since this is your first time, would you like to" +
             " create an account?";
+
+    public static final String HOME_TAG = "home";
+    public static final String HISTORY_TAG = "history";
 
     public static final String PASS_TOO_SHORT = "Please enter a longer password";
     public static final String INVALID_NUMBER = "Please enter in a valid number.";

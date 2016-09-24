@@ -12,6 +12,7 @@
     <string name="receiver_num_hint">Enter in a number to receive a call</string>
     <string name="call">Call</string>
     <string name="loading">Loading...</string>
+    <string name="calling">Making call...</string>
 
     <string-array name="main_icon_array">
         <item>@string/fa_icon_home</item>
@@ -30,4 +31,12 @@
 
     <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
     <string name="register_ad_unit_id">ca-app-pub-3366431309616914/3173585580</string>
+
+    <!--Ads strings-->
+    <string name="ad_dialog_title">Unable to fully load application</string>
+    <string name="ad_dailog_msg">Application will now close.</string>
+    <string name="ok">OK</string>
+
+    <string name="get_history_failed">Unable to retrieve history. Please try again later.</string>
+    <string name="no_history">No history to display.</string>
 </resources>

@@ -2,4 +2,5 @@
 <resources>
     <string name="fa_icon_home">{fa-home}</string>
     <string name="fa_icon_history">{fa-history}</string>
+    <string name="fa_icon_phone">{fa-phone}</string>
 </resources>

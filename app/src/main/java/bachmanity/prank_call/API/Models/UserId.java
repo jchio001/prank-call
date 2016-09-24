@@ -9,9 +9,9 @@ import com.google.gson.annotations.SerializedName;
 public class UserId {
     @SerializedName("id")
     @Expose
-    private long userId;
+    private int userId;
 
-    public long getUserId() {
+    public int getUserId() {
         return userId;
     }
 }

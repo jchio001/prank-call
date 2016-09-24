@@ -38,6 +38,7 @@ public class RegisterActivity extends AppCompatActivity {
     @Bind(R.id.registerAdView) AdView adView;
 
     ProgressDialog  progressDialog;
+    String number;
     boolean isFirstTime = false;
     String encryptedPass;
 
@@ -88,7 +89,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     @OnClick({R.id.register_button1, R.id.login_button})
     public void onClick(View v) {
-        String number = phoneNumber.getText().toString();
+        number = phoneNumber.getText().toString();
         String enteredPass = password.getText().toString();
         if (number.length() < 10) {
             SnackbarHelper.showSnackbar(this, parent, Constants.INVALID_NUMBER);
@@ -122,24 +123,14 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     @Subscribe
-    public void onEvent(Integer id) {
-        progressDialog.dismiss();
-        if (id > 0) {
-            Toast.makeText(this, "Success!", Toast.LENGTH_SHORT).show();
-        }
-        else {
-            SnackbarHelper.showSnackbar(this, parent, Constants.REGISTER_FAILURE);
-        }
-
-    }
-
-    @Subscribe
     public void loginResp(LoginRespBundle resp) {
         progressDialog.dismiss();
         int id = resp.getId();
         if (id > 0) {
             Intent intent = new Intent();
             intent.putExtra(Constants.ID, id);
+            intent.putExtra(Constants.ACCOUNT_ACTIVE, resp.isAccount_active());
+            intent.putExtra(Constants.NUMBER, number);
             intent.putExtra(Constants.PASSWORD, encryptedPass);
             setResult(RESULT_OK, intent);
             finish();

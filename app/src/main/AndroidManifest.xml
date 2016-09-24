@@ -3,6 +3,8 @@
     package="bachmanity.prank_call">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
 
     <application
         android:name=".Misc.MyApplication"
@@ -15,17 +17,19 @@
             android:name=".Activities.MainActivity"
             android:label="@string/app_name"
             android:windowSoftInputMode="stateHidden"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".Activities.RegisterActivity"
             android:windowSoftInputMode="stateHidden"
-            android:label="@string/login"></activity>
+            android:screenOrientation="portrait"
+            android:label="@string/login">
+        </activity>
     </application>
 
 </manifest>
