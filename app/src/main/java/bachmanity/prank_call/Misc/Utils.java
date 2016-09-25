@@ -101,7 +101,9 @@ public class Utils {
         sp.edit().remove(Constants.ID).commit();
         sp.edit().remove(Constants.NUMBER).commit();
         sp.edit().remove(Constants.PASSWORD).commit();
-        HistorySingleton.getInstance().deleteHistory();
+        HistorySingleton history = HistorySingleton.getInstance();
+        history.setLoad(true);
+        history.deleteHistory();
     }
 
     public static int getId(Context context) {

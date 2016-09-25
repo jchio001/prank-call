@@ -141,18 +141,7 @@ public class MainActivity extends AppCompatActivity {
             drawer.closeDrawer(GravityCompat.START);
         }
         else {
-            Fragment myFragment = getSupportFragmentManager().findFragmentByTag(Constants.HOME_TAG);
-            if (myFragment != null && myFragment.isVisible()) {
-                super.onBackPressed();
-            }
-            else {
-                lastSelectedView.setBackgroundColor(this.getResources().getColor(R.color.white));
-                firstListElem.setBackgroundColor(this.getResources().getColor(R.color.light_gray));
-                lastSelectedView = null;
-                getSupportActionBar().setTitle(getString(R.string.home));
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_layout, new HomeFragment(),
-                        Constants.HOME_TAG).commit();
-            }
+            returnToHomeFragment();
         }
     }
 
@@ -214,18 +203,7 @@ public class MainActivity extends AppCompatActivity {
             drawer.closeDrawer(GravityCompat.START);
             Utils.logout(this);
             v.setText(getString(R.string.login));
-            Fragment myFragment = getSupportFragmentManager().findFragmentByTag(Constants.HOME_TAG);
-            if (myFragment != null && myFragment.isVisible()) {
-                return;
-            }
-            else {
-                lastSelectedView.setBackgroundColor(this.getResources().getColor(R.color.white));
-                firstListElem.setBackgroundColor(this.getResources().getColor(R.color.light_gray));
-                lastSelectedView = null;
-                getSupportActionBar().setTitle(getString(R.string.home));
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_layout, new HomeFragment(),
-                        Constants.HOME_TAG).commit();
-            }
+            returnToHomeFragment();
         }
     }
 
@@ -243,6 +221,21 @@ public class MainActivity extends AppCompatActivity {
                     loginText.setText(getString(R.string.logout));
                 }
             }
+        }
+    }
+
+    public void returnToHomeFragment() {
+        Fragment myFragment = getSupportFragmentManager().findFragmentByTag(Constants.HOME_TAG);
+        if (myFragment != null && myFragment.isVisible()) {
+            return;
+        }
+        else {
+            lastSelectedView.setBackgroundColor(this.getResources().getColor(R.color.white));
+            firstListElem.setBackgroundColor(this.getResources().getColor(R.color.light_gray));
+            lastSelectedView = null;
+            getSupportActionBar().setTitle(getString(R.string.home));
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_layout, new HomeFragment(),
+                    Constants.HOME_TAG).commit();
         }
     }
 

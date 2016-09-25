@@ -4,11 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bachmanity.prank_call.API.Models.History;
-import bachmanity.prank_call.API.RetrofitSingleton;
 
 public class HistorySingleton {
     private static HistorySingleton instance;
-    private boolean initialLoad;
+    private boolean load;
     private List<History> historyList;
 
     public static HistorySingleton getInstance() {
@@ -21,7 +20,7 @@ public class HistorySingleton {
 
     private HistorySingleton() {
         historyList = new ArrayList<>();
-        initialLoad = true;
+        load = true;
     }
 
 
@@ -49,12 +48,12 @@ public class HistorySingleton {
         historyList.clear();
     }
 
-    public boolean isInitialLoad() {
-        return initialLoad;
+    public boolean isLoad() {
+        return load;
     }
 
-    public void setInitialLoad(boolean initialLoad) {
-        this.initialLoad = initialLoad;
+    public void setLoad(boolean load) {
+        this.load = load;
     }
 
     public List<History> getHistoryList() {

@@ -56,8 +56,8 @@ public class HistoryFragment extends Fragment {
         historyMainLayout.requestLayout();
 
         if (Utils.getId(getContext()) != -1) {
-            boolean initialLoad = HistorySingleton.getInstance().isInitialLoad();
-            if (initialLoad) {
+            boolean load = HistorySingleton.getInstance().isLoad();
+            if (load) {
                 makeAPICall();
             } else {
                 loadHistory();
@@ -105,7 +105,7 @@ public class HistoryFragment extends Fragment {
 
     @Subscribe
     public void retrieveHistory(List<History> historyPage) {
-        HistorySingleton.getInstance().setInitialLoad(false);
+        HistorySingleton.getInstance().setLoad(false);
         List<History> history = HistorySingleton.getInstance().addHistoryPage(historyPage);
         if (history.size() == 0) {
             historyTextView.setText(getString(R.string.no_history));
