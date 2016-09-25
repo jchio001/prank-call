@@ -11,6 +11,7 @@ import java.util.List;
 
 import bachmanity.prank_call.API.Models.History;
 import bachmanity.prank_call.Misc.HistoryViewHolder;
+import bachmanity.prank_call.Misc.Utils;
 import bachmanity.prank_call.R;
 
 public class HistoryAdapter extends BaseAdapter {
@@ -61,7 +62,8 @@ public class HistoryAdapter extends BaseAdapter {
 
         holder.historyText.setText((from + " called " + to)
         );
-        holder.historyDateText.setText(histories.get(position).getTimestamp());
+        holder.historyDateText.setText(
+                Utils.getLocalTimeString(histories.get(position).getTimestamp()));
 
         return view;
     }

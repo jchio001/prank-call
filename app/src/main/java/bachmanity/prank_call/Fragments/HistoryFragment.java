@@ -9,13 +9,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.google.android.gms.ads.AdView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import bachmanity.prank_call.API.Models.History;
@@ -33,6 +34,7 @@ public class HistoryFragment extends Fragment {
 
     @Bind(R.id.history_list_view) ListView historyListView;
     @Bind(R.id.history_text_view) TextView historyTextView;
+    @Bind(R.id.history_main) RelativeLayout historyMainLayout;
 
     CoordinatorLayout parent;
     ProgressDialog progressDialog;
@@ -46,11 +48,24 @@ public class HistoryFragment extends Fragment {
         EventBus.getDefault().register(this);
         ButterKnife.bind(this, rootView);
 
-        boolean initialLoad = HistorySingleton.getInstance().isInitialLoad();
-        if (initialLoad) {
-            makeAPICall();
-        } else {
-            loadHistory();
+        AdView ad = (AdView) getActivity().findViewById(R.id.adView);
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) historyMainLayout.getLayoutParams();
+        params.setMargins(0, 0, 0, ad.getHeight());
+        //params.setMar = parent.getHeight() - ad.getHeight();
+        historyMainLayout.setLayoutParams(params);
+        historyMainLayout.requestLayout();
+
+        if (Utils.getId(getContext()) != -1) {
+            boolean initialLoad = HistorySingleton.getInstance().isInitialLoad();
+            if (initialLoad) {
+                makeAPICall();
+            } else {
+                loadHistory();
+            }
+        }
+        else {
+            historyTextView.setText(getString(R.string.login_for_history));
+            historyTextView.setVisibility(View.VISIBLE);
         }
 
         return rootView;
@@ -67,10 +82,10 @@ public class HistoryFragment extends Fragment {
         from = Utils.getPhoneNumber(getActivity());
         to = from;
 
-        if (from.isEmpty()) {
+/*        if (from.isEmpty()) {
             from = Utils.getIPAddr(getActivity());
             to = Utils.getDevicePhoneNumber(getActivity());
-        }
+        }*/
 
         if (from == null) {
             SnackbarHelper.showSnackbar(getActivity(), parent, getString(R.string.get_history_failed));

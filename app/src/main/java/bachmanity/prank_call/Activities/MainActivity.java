@@ -201,8 +201,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         drawer.closeDrawer(GravityCompat.START);
-
-        //Toast.makeText(this, Integer.toString(position), Toast.LENGTH_SHORT).show();
     }
 
     @OnClick(R.id.login_text)
@@ -214,8 +212,20 @@ public class MainActivity extends AppCompatActivity {
         }
         else if (v.getText().toString().equals(getString(R.string.logout))) {
             drawer.closeDrawer(GravityCompat.START);
-            Utils.saveId(-1, this);
+            Utils.logout(this);
             v.setText(getString(R.string.login));
+            Fragment myFragment = getSupportFragmentManager().findFragmentByTag(Constants.HOME_TAG);
+            if (myFragment != null && myFragment.isVisible()) {
+                return;
+            }
+            else {
+                lastSelectedView.setBackgroundColor(this.getResources().getColor(R.color.white));
+                firstListElem.setBackgroundColor(this.getResources().getColor(R.color.light_gray));
+                lastSelectedView = null;
+                getSupportActionBar().setTitle(getString(R.string.home));
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_layout, new HomeFragment(),
+                        Constants.HOME_TAG).commit();
+            }
         }
     }
 
@@ -227,6 +237,7 @@ public class MainActivity extends AppCompatActivity {
                 int id = intent.getIntExtra(Constants.ID, -1);
                 if (id != -1) {
                     Utils.saveId(id, this);
+                    Utils.saveAccountStatus(intent.getBooleanExtra(Constants.ACCOUNT_ACTIVE, false), this);
                     Utils.savePhoneNumber(intent.getStringExtra(Constants.NUMBER), this);
                     Utils.savePassword(intent.getStringExtra(Constants.PASSWORD), this);
                     loginText.setText(getString(R.string.logout));

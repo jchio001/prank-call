@@ -4,19 +4,19 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="2dp"
-    android:layout_marginBottom="2dp">
+    android:layout_marginTop="4dp"
+    android:layout_marginBottom="4dp">
 
     <com.joanzapata.iconify.widget.IconTextView
         android:id="@+id/history_icon"
         android:text="@string/fa_icon_phone"
-        android:layout_width="42dp"
-        android:layout_height="42dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="6dp"
         android:layout_marginRight="6dp"
         android:gravity="center"
-        android:textSize="42sp" />
+        android:textSize="56sp" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -30,13 +30,13 @@
             android:id="@+id/history_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp" />
+            android:textSize="24sp" />
 
         <TextView
             android:id="@+id/history_date_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="12sp" />
+            android:textSize="18sp" />
 
     </LinearLayout>
 

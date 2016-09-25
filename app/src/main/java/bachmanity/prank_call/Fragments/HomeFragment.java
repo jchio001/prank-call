@@ -10,6 +10,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -49,7 +53,7 @@ public class HomeFragment extends Fragment {
 
     @OnClick(R.id.call)
     public void onCall() {
-        String number = numberToCall.getText().toString();
+        final String number = numberToCall.getText().toString();
 
         if (number.length() < 10) {
             SnackbarHelper.showSnackbar(getContext(), parent, Constants.INVALID_NUMBER);
@@ -60,14 +64,29 @@ public class HomeFragment extends Fragment {
         progressDialog.setCancelable(false);
         progressDialog.setMessage(getString(R.string.calling));
 
-        CallBundle callBundle = new CallBundle(number, Utils.getId(getContext()), Utils.getPassword(getContext()));
-        CallCallback callback = new CallCallback();
-
         Utils.hideKeyboard(parent, getContext());
         progressDialog.show();
-        RetrofitSingleton.getInstance().getMatchingService()
-                .call(callBundle).
-                enqueue(callback);
+        progressDialog.setContentView(R.layout.adview_for_dialog);
+
+        AdView dialogAd = (AdView) progressDialog.findViewById(R.id.dialog_adview);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        dialogAd.loadAd(adRequest);
+        dialogAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                CallBundle callBundle = new CallBundle(number, Utils.getId(getContext()), Utils.getPassword(getContext()));
+                RetrofitSingleton.getInstance().getMatchingService()
+                        .call(callBundle).
+                        enqueue(new CallCallback());
+            }
+
+            @Override
+            public void onAdFailedToLoad(int errorcode) {
+                progressDialog.dismiss();
+                SnackbarHelper.showSnackbar(getContext(), parent, getString(R.string.call_not_made));
+                super.onAdFailedToLoad(errorcode);
+            }
+        });
     }
 
     @Subscribe

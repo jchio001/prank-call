@@ -45,6 +45,10 @@ public class HistorySingleton {
         historyList.addAll(historyPage);
     }
 
+    public void deleteHistory() {
+        historyList.clear();
+    }
+
     public boolean isInitialLoad() {
         return initialLoad;
     }

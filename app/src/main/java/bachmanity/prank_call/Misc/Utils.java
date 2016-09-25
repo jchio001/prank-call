@@ -1,6 +1,7 @@
 package bachmanity.prank_call.Misc;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.telephony.TelephonyManager;
@@ -15,7 +16,12 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Enumeration;
+import java.util.TimeZone;
 
 import bachmanity.prank_call.R;
 
@@ -71,9 +77,31 @@ public class Utils {
         return ip;
     }
 
+    public static String getLocalTimeString(String timestamp) {
+        try {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+            format.setTimeZone(TimeZone.getTimeZone("UTC"));
+            Date utcDate = format.parse(timestamp);
+            format = new SimpleDateFormat("MM/dd/yyyy hh:mm aa");
+            format.setTimeZone(Calendar.getInstance().getTimeZone());
+            return format.format(utcDate);
+        }
+        catch (ParseException e) {
+            return null;
+        }
+    }
+
     public static String getDevicePhoneNumber(Context context) {
         return ((TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE))
                 .getLine1Number();
+    }
+
+    public static void logout(Context context) {
+        SharedPreferences sp = SPSingleton.getInstance(context).getSp();
+        sp.edit().remove(Constants.ID).commit();
+        sp.edit().remove(Constants.NUMBER).commit();
+        sp.edit().remove(Constants.PASSWORD).commit();
+        HistorySingleton.getInstance().deleteHistory();
     }
 
     public static int getId(Context context) {
@@ -100,7 +128,11 @@ public class Utils {
         SPSingleton.getInstance(context).getSp().edit().putString(Constants.NUMBER, number).commit();
     }
 
-    /*public  static void changeActiveness(boolean account_active, Context context) {
+    public static void saveAccountStatus(boolean isActive, Context context) {
+        SPSingleton.getInstance(context).getSp().edit().putBoolean(Constants.ACCOUNT_ACTIVE, isActive).commit();
+    }
 
-    }*/
+    public static boolean getAccountStatus(Context context) {
+        return SPSingleton.getInstance(context).getSp().getBoolean(Constants.ACCOUNT_ACTIVE, false);
+    }
 }

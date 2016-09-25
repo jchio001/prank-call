@@ -32,6 +32,8 @@
     <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
     <string name="register_ad_unit_id">ca-app-pub-3366431309616914/3173585580</string>
 
+    <string name="call_not_made">Unable to make call. Try again later.</string>
+
     <!--Ads strings-->
     <string name="ad_dialog_title">Unable to fully load application</string>
     <string name="ad_dailog_msg">Application will now close.</string>
@@ -39,4 +41,5 @@
 
     <string name="get_history_failed">Unable to retrieve history. Please try again later.</string>
     <string name="no_history">No history to display.</string>
+    <string name="login_for_history">You must login in order to see your history.</string>
 </resources>
