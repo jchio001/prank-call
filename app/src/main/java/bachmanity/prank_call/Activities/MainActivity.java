@@ -218,6 +218,7 @@ public class MainActivity extends AppCompatActivity {
                     Utils.saveAccountStatus(intent.getBooleanExtra(Constants.ACCOUNT_ACTIVE, false), this);
                     Utils.savePhoneNumber(intent.getStringExtra(Constants.NUMBER), this);
                     Utils.savePassword(intent.getStringExtra(Constants.PASSWORD), this);
+                    returnToHomeFragment();
                     loginText.setText(getString(R.string.logout));
                 }
             }
@@ -245,12 +246,6 @@ public class MainActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
         return super.onOptionsItemSelected(item);
     }
 }

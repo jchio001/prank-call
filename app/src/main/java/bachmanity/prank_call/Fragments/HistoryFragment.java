@@ -12,6 +12,8 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -19,8 +21,10 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.List;
 
+import bachmanity.prank_call.API.Models.CallBundle;
 import bachmanity.prank_call.API.Models.History;
 import bachmanity.prank_call.API.RetrofitSingleton;
+import bachmanity.prank_call.API.Services.Callbacks.CallCallback;
 import bachmanity.prank_call.API.Services.Callbacks.HistoryCallback;
 import bachmanity.prank_call.Adapters.HistoryAdapter;
 import bachmanity.prank_call.Misc.HistorySingleton;
@@ -78,7 +82,7 @@ public class HistoryFragment extends Fragment {
     }
 
     public void makeAPICall() {
-        String from, to;
+        final String from, to;
         from = Utils.getPhoneNumber(getActivity());
         to = from;
 
@@ -95,13 +99,30 @@ public class HistoryFragment extends Fragment {
         }
 
         progressDialog = new ProgressDialog(getContext());
-        progressDialog.setMessage(getString(R.string.loading));
         progressDialog.setCancelable(false);
         progressDialog.show();
-        RetrofitSingleton.getInstance().getMatchingService()
-                .getHistory(from, to).enqueue(new HistoryCallback());
+        progressDialog.setContentView(R.layout.adview_for_dialog);
 
+        AdView dialogAd = (AdView) progressDialog.findViewById(R.id.dialog_adview);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        dialogAd.loadAd(adRequest);
+        dialogAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                RetrofitSingleton.getInstance().getMatchingService()
+                        .getHistory(from, to).enqueue(new HistoryCallback());
+            }
+
+            @Override
+            public void onAdFailedToLoad(int errorcode) {
+                progressDialog.dismiss();
+                SnackbarHelper.showSnackbar(getContext(), parent, getString(R.string.call_not_made));
+                super.onAdFailedToLoad(errorcode);
+            }
+        });
     }
+
+    
 
     @Subscribe
     public void retrieveHistory(List<History> historyPage) {
