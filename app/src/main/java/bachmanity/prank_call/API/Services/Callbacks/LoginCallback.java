@@ -1,7 +1,5 @@
 package bachmanity.prank_call.API.Services.Callbacks;
 
-import android.view.ActionMode;
-
 import org.greenrobot.eventbus.EventBus;
 
 import bachmanity.prank_call.API.Models.LoginRespBundle;

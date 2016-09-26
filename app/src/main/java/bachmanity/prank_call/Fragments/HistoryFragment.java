@@ -3,6 +3,7 @@ package bachmanity.prank_call.Fragments;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -21,12 +22,11 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.List;
 
-import bachmanity.prank_call.API.Models.CallBundle;
 import bachmanity.prank_call.API.Models.History;
 import bachmanity.prank_call.API.RetrofitSingleton;
-import bachmanity.prank_call.API.Services.Callbacks.CallCallback;
 import bachmanity.prank_call.API.Services.Callbacks.HistoryCallback;
 import bachmanity.prank_call.Adapters.HistoryAdapter;
+import bachmanity.prank_call.Misc.Constants;
 import bachmanity.prank_call.Misc.HistorySingleton;
 import bachmanity.prank_call.Misc.SnackbarHelper;
 import bachmanity.prank_call.Misc.Utils;
@@ -86,18 +86,6 @@ public class HistoryFragment extends Fragment {
         from = Utils.getPhoneNumber(getActivity());
         to = from;
 
-/*        if (from.isEmpty()) {
-            from = Utils.getIPAddr(getActivity());
-            to = Utils.getDevicePhoneNumber(getActivity());
-        }*/
-
-        if (from == null) {
-            SnackbarHelper.showSnackbar(getActivity(), parent, getString(R.string.get_history_failed));
-            historyTextView.setText(getString(R.string.get_history_failed));
-            historyTextView.setVisibility(View.VISIBLE);
-            return;
-        }
-
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setCancelable(false);
         progressDialog.show();
@@ -109,8 +97,14 @@ public class HistoryFragment extends Fragment {
         dialogAd.setAdListener(new AdListener() {
             @Override
             public void onAdLoaded() {
-                RetrofitSingleton.getInstance().getMatchingService()
-                        .getHistory(from, to).enqueue(new HistoryCallback());
+                super.onAdLoaded();
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    public void run() {
+                        RetrofitSingleton.getInstance().getMatchingService()
+                                .getHistory(from, to).enqueue(new HistoryCallback());
+                    }
+                }, 2000);
             }
 
             @Override
@@ -122,12 +116,10 @@ public class HistoryFragment extends Fragment {
         });
     }
 
-    
-
     @Subscribe
     public void retrieveHistory(List<History> historyPage) {
         HistorySingleton.getInstance().setLoad(false);
-        List<History> history = HistorySingleton.getInstance().addHistoryPage(historyPage);
+        List<History> history = HistorySingleton.getInstance().refreshHistory(historyPage);
         if (history.size() == 0) {
             historyTextView.setText(getString(R.string.no_history));
             historyTextView.setVisibility(View.VISIBLE);
@@ -141,7 +133,10 @@ public class HistoryFragment extends Fragment {
     @Subscribe
     public void onError(String msg) {
         progressDialog.dismiss();
-        SnackbarHelper.showSnackbar(getContext(), parent, msg);
+        if (msg.equals(Constants.HISTORY_FAILED)) {
+            SnackbarHelper.showSnackbar(getContext(), parent, getString(R.string.get_history_failed));
+            historyTextView.setText(getString(R.string.get_history_failed));
+        }
     }
 
 

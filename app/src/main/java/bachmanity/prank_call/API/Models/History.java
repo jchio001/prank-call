@@ -3,8 +3,6 @@ package bachmanity.prank_call.API.Models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.sql.Timestamp;
-
 public class History {
     @SerializedName("history__id")
     @Expose

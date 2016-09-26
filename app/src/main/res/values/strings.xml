@@ -32,6 +32,7 @@
     <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
     <string name="register_ad_unit_id">ca-app-pub-3366431309616914/3173585580</string>
 
+    <string name="call_made">A call has been made!</string>
     <string name="call_not_made">Unable to make call. Try again later.</string>
 
     <!--Ads strings-->
@@ -42,4 +43,13 @@
     <string name="get_history_failed">Unable to retrieve history. Please try again later.</string>
     <string name="no_history">No history to display.</string>
     <string name="login_for_history">You must login in order to see your history.</string>
+
+    <string name="verify">Verify your account (press here)</string>
+    <string name="verify_hint">Confirmation code</string>
+    <string name="verify_text">Verify</string>
+    <string name="cancel">Cancel</string>
+    <string name="code_too_short">Invalid code (too short)</string>
+
+    <string name="account_activated">Account is now active!</string>
+    <string name="activation_failed">Unable to activate account. Try again later.</string>
 </resources>

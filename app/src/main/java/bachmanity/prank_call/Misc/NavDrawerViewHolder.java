@@ -3,8 +3,6 @@ package bachmanity.prank_call.Misc;
 import android.view.View;
 import android.widget.TextView;
 
-import com.joanzapata.iconify.widget.IconTextView;
-
 import bachmanity.prank_call.R;
 import butterknife.Bind;
 import butterknife.ButterKnife;

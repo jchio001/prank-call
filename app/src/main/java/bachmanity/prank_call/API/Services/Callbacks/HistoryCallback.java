@@ -1,7 +1,5 @@
 package bachmanity.prank_call.API.Services.Callbacks;
 
-import android.content.res.Resources;
-
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.PrintWriter;
@@ -11,7 +9,7 @@ import java.util.List;
 
 import bachmanity.prank_call.API.Models.History;
 import bachmanity.prank_call.Misc.APIConstants;
-import bachmanity.prank_call.R;
+import bachmanity.prank_call.Misc.Constants;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -30,7 +28,7 @@ public class HistoryCallback implements Callback<List<History> > {
                 break;
             default:
                 System.out.println(resp.code());
-                EventBus.getDefault().post("POTATO");
+                EventBus.getDefault().post(Constants.HISTORY_FAILED);
                 break;
         }
     }
@@ -41,7 +39,7 @@ public class HistoryCallback implements Callback<List<History> > {
         final PrintWriter printWriter = new PrintWriter(result);
         t.printStackTrace(printWriter);
         System.out.println(result.toString());
-        EventBus.getDefault().post("ERROR");
+        EventBus.getDefault().post(Constants.HISTORY_FAILED);
     }
 
 }

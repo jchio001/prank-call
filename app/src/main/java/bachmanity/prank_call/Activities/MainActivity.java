@@ -19,7 +19,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -140,7 +139,9 @@ public class MainActivity extends AppCompatActivity {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         }
-        else {
+        else if (getSupportFragmentManager().findFragmentByTag(Constants.HOME_TAG) != null) {
+            finish();
+        } else {
             returnToHomeFragment();
         }
     }
@@ -204,6 +205,7 @@ public class MainActivity extends AppCompatActivity {
             Utils.logout(this);
             v.setText(getString(R.string.login));
             returnToHomeFragment();
+            EventBus.getDefault().post(Constants.LOGOUT_EVENT);
         }
     }
 
@@ -220,6 +222,7 @@ public class MainActivity extends AppCompatActivity {
                     Utils.savePassword(intent.getStringExtra(Constants.PASSWORD), this);
                     returnToHomeFragment();
                     loginText.setText(getString(R.string.logout));
+                    EventBus.getDefault().post(Constants.LOGIN_EVENT);
                 }
             }
         }

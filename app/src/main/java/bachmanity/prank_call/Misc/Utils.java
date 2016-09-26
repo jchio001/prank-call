@@ -2,7 +2,6 @@ package bachmanity.prank_call.Misc;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.telephony.TelephonyManager;
 import android.text.format.Formatter;
@@ -23,7 +22,7 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.TimeZone;
 
-import bachmanity.prank_call.R;
+import bachmanity.prank_call.API.Models.ActivationBundle;
 
 /**
  * Created by Jonathan Chiou on 8/25/2016.

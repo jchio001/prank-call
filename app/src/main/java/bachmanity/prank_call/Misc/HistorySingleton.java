@@ -39,9 +39,10 @@ public class HistorySingleton {
         return this.historyList;
     }
 
-    public void refreshHistory(List<History> historyPage) {
+    public List<History> refreshHistory(List<History> historyPage) {
         historyList.clear();
         historyList.addAll(historyPage);
+        return this.historyList;
     }
 
     public void deleteHistory() {
