@@ -30,7 +30,7 @@ public class LoginCallback implements Callback<LoginRespBundle> {
     }
 
     @Override
-    public void onFailure(Call<LoginRespBundle> call, Throwable t)  {
+    public void onFailure(Call<LoginRespBundle> call, Throwable t) {
         EventBus.getDefault().post("ERROR");
     }
 

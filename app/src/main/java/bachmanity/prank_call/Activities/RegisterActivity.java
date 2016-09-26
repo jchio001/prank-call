@@ -36,7 +36,7 @@ public class RegisterActivity extends AppCompatActivity {
     @Bind(R.id.phoneNumber) TextView phoneNumber;
     @Bind(R.id.registerAdView) AdView adView;
 
-    ProgressDialog  progressDialog;
+    ProgressDialog progressDialog;
     String number;
     boolean isFirstTime = false;
     String encryptedPass;
@@ -97,8 +97,7 @@ public class RegisterActivity extends AppCompatActivity {
         if (enteredPass.length() < 8) {
             SnackbarHelper.showSnackbar(this, parent, Constants.PASS_TOO_SHORT);
             return;
-        }
-        else {
+        } else {
             Utils.hideKeyboard(parent, this);
             progressDialog = new ProgressDialog(this);
             progressDialog.setCancelable(false);
@@ -133,8 +132,7 @@ public class RegisterActivity extends AppCompatActivity {
             intent.putExtra(Constants.PASSWORD, encryptedPass);
             setResult(RESULT_OK, intent);
             finish();
-        }
-        else {
+        } else {
             SnackbarHelper.showSnackbar(this, parent, Constants.LOGIN_FAILURE);
         }
     }

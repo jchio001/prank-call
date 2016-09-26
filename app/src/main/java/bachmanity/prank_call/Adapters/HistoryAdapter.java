@@ -28,7 +28,9 @@ public class HistoryAdapter extends BaseAdapter {
     }
 
     @Override
-    public History getItem(int position) { return histories.get(position); }
+    public History getItem(int position) {
+        return histories.get(position);
+    }
 
     @Override
     public long getItemId(int position) {
@@ -39,11 +41,10 @@ public class HistoryAdapter extends BaseAdapter {
         HistoryViewHolder holder;
         if (view == null) {
             LayoutInflater vi = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view =  vi.inflate(R.layout.history_item, parent, false);
+            view = vi.inflate(R.layout.history_item, parent, false);
             holder = new HistoryViewHolder(view);
             view.setTag(holder);
-        }
-        else {
+        } else {
             holder = (HistoryViewHolder) view.getTag();
         }
 

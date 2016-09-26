@@ -66,8 +66,7 @@ public class HistoryFragment extends Fragment {
             } else {
                 loadHistory();
             }
-        }
-        else {
+        } else {
             historyTextView.setText(getString(R.string.login_for_history));
             historyTextView.setVisibility(View.VISIBLE);
         }
@@ -123,8 +122,7 @@ public class HistoryFragment extends Fragment {
         if (history.size() == 0) {
             historyTextView.setText(getString(R.string.no_history));
             historyTextView.setVisibility(View.VISIBLE);
-        }
-        else {
+        } else {
             progressDialog.dismiss();
             loadHistory();
         }

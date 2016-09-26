@@ -18,5 +18,5 @@ public interface MatchingService {
     Call<Void> call(@Body CallBundle callBundle);
 
     @GET("/history")
-    Call<List <History>> getHistory(@Query("from") String from, @Query("to") String to);
+    Call<List<History>> getHistory(@Query("from") String from, @Query("to") String to);
 }

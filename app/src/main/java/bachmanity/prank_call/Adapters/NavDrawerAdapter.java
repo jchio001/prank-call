@@ -9,7 +9,7 @@ import android.widget.BaseAdapter;
 import bachmanity.prank_call.Misc.NavDrawerViewHolder;
 import bachmanity.prank_call.R;
 
-public class NavDrawerAdapter extends BaseAdapter{
+public class NavDrawerAdapter extends BaseAdapter {
     private String[] icons;
     private String[] text;
     Context context;
@@ -42,8 +42,7 @@ public class NavDrawerAdapter extends BaseAdapter{
             view = vi.inflate(R.layout.drawer_item, parent, false);
             holder = new NavDrawerViewHolder(view);
             view.setTag(holder);
-        }
-        else {
+        } else {
             holder = (NavDrawerViewHolder) view.getTag();
         }
 

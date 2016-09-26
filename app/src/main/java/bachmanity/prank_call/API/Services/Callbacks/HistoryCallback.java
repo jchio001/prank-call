@@ -17,7 +17,7 @@ import retrofit2.Response;
 /**
  * Created by jman0_000 on 9/22/2016.
  */
-public class HistoryCallback implements Callback<List<History> > {
+public class HistoryCallback implements Callback<List<History>> {
 
     @Override
     public void onResponse(Call<List<History>> call, Response<List<History>> resp) {

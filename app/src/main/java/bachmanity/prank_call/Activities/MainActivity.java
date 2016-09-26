@@ -78,14 +78,6 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_layout, new HomeFragment(),
                 Constants.HOME_TAG).commit();
 
-        if (!SPSingleton.getInstance(this).getSp().getBoolean(Constants.FIRST_TIME, false)) {
-            SPSingleton.getInstance(this).getSp().edit().putBoolean(Constants.FIRST_TIME, true).commit();
-            Intent intent = new Intent(this, RegisterActivity.class);
-            intent.putExtra(Constants.FIRST_TIME, true);
-            startActivityForResult(intent, 1);
-            return;
-        }
-
         //EventBus.getDefault().register(this);
 
         progressDialog = new ProgressDialog(this);
@@ -99,8 +91,14 @@ public class MainActivity extends AppCompatActivity {
         adView.setAdListener(new AdListener() {
             @Override
             public void onAdLoaded() {
-                progressDialog.dismiss();
                 super.onAdLoaded();
+                progressDialog.dismiss();
+                if (!SPSingleton.getInstance(context).getSp().getBoolean(Constants.FIRST_TIME, false)) {
+                    SPSingleton.getInstance(context).getSp().edit().putBoolean(Constants.FIRST_TIME, true).commit();
+                    Intent intent = new Intent(context, RegisterActivity.class);
+                    intent.putExtra(Constants.FIRST_TIME, true);
+                    startActivityForResult(intent, 1);
+                }
             }
 
             @Override
@@ -138,8 +136,7 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        }
-        else if (getSupportFragmentManager().findFragmentByTag(Constants.HOME_TAG) != null) {
+        } else if (getSupportFragmentManager().findFragmentByTag(Constants.HOME_TAG) != null) {
             finish();
         } else {
             returnToHomeFragment();
@@ -158,8 +155,7 @@ public class MainActivity extends AppCompatActivity {
         firstListElem = parent.getChildAt(0);
         if (lastSelectedView == null) {
             parent.getChildAt(0).setBackgroundColor(this.getResources().getColor(R.color.white));
-        }
-        else {
+        } else {
             lastSelectedView.setBackgroundColor(this.getResources().getColor(R.color.white));
         }
 
@@ -170,20 +166,17 @@ public class MainActivity extends AppCompatActivity {
             if (myFragment != null) {
                 drawer.closeDrawer(GravityCompat.START);
                 return;
-            }
-            else {
+            } else {
                 getSupportActionBar().setTitle(getString(R.string.home));
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_layout, new HomeFragment(),
                         Constants.HOME_TAG).commit();
             }
-        }
-        else if (id == 1) {
+        } else if (id == 1) {
             Fragment myFragment = getSupportFragmentManager().findFragmentByTag(Constants.HISTORY_TAG);
             if (myFragment != null) {
                 drawer.closeDrawer(GravityCompat.START);
                 return;
-            }
-            else {
+            } else {
                 getSupportActionBar().setTitle(getString(R.string.history));
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_layout, new HistoryFragment(),
                         Constants.HISTORY_TAG).commit();
@@ -199,8 +192,7 @@ public class MainActivity extends AppCompatActivity {
             drawer.closeDrawer(GravityCompat.START);
             Intent intent = new Intent(this, RegisterActivity.class);
             startActivityForResult(intent, 1);
-        }
-        else if (v.getText().toString().equals(getString(R.string.logout))) {
+        } else if (v.getText().toString().equals(getString(R.string.logout))) {
             drawer.closeDrawer(GravityCompat.START);
             Utils.logout(this);
             v.setText(getString(R.string.login));
@@ -230,12 +222,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void returnToHomeFragment() {
         Fragment myFragment = getSupportFragmentManager().findFragmentByTag(Constants.HOME_TAG);
-        if (myFragment != null && myFragment.isVisible()) {
+        if (myFragment != null) {
             return;
-        }
-        else {
-            lastSelectedView.setBackgroundColor(this.getResources().getColor(R.color.white));
-            firstListElem.setBackgroundColor(this.getResources().getColor(R.color.light_gray));
+        } else {
+            if (lastSelectedView != null && firstListElem != null) {
+                lastSelectedView.setBackgroundColor(this.getResources().getColor(R.color.white));
+                firstListElem.setBackgroundColor(this.getResources().getColor(R.color.light_gray));
+            }
             lastSelectedView = null;
             getSupportActionBar().setTitle(getString(R.string.home));
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_layout, new HomeFragment(),

@@ -16,7 +16,7 @@ public class SPSingleton {
     }
 
     public static SPSingleton getInstance(Context context) {
-        if (instance == null){
+        if (instance == null) {
             instance = new SPSingleton(context);
         }
 

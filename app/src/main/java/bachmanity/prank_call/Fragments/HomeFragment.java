@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -52,8 +51,10 @@ public class HomeFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_home, parentViewGroup, false);
         EventBus.getDefault().register(this);
         ButterKnife.bind(this, rootView);
-        verifyText.setVisibility((Utils.getAccountStatus(getContext()) &&
-                Utils.getId(getContext()) != -1) ? View.GONE : View.VISIBLE);
+        verifyText.setVisibility(
+                ((Utils.getAccountStatus(getContext()) &&
+                        Utils.getId(getContext()) != -1) ||
+                        Utils.getId(getContext()) == -1) ? View.GONE : View.VISIBLE);
         return rootView;
     }
 
@@ -181,13 +182,13 @@ public class HomeFragment extends Fragment {
             progressDialog.dismiss();
             SnackbarHelper.showSnackbar(getContext(), parent, getString(R.string.call_made));
             HistorySingleton.getInstance().setLoad(true);
-        } else if(resp.equals(Constants.LOGIN_EVENT)) {
+        } else if (resp.equals(Constants.LOGIN_EVENT)) {
             verifyText.setVisibility((Utils.getAccountStatus(getContext()) &&
                     Utils.getId(getContext()) != -1) ? View.GONE : View.VISIBLE);
         } else if (resp.equals(Constants.LOGOUT_EVENT)) {
             verifyText.setVisibility(View.GONE);
-        }
-        else {
+        } else {
+            progressDialog.dismiss();
             SnackbarHelper.showSnackbar(getContext(), parent, getString(R.string.call_not_made));
         }
 

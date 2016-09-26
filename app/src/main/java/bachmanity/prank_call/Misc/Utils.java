@@ -22,8 +22,6 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.TimeZone;
 
-import bachmanity.prank_call.API.Models.ActivationBundle;
-
 /**
  * Created by Jonathan Chiou on 8/25/2016.
  */
@@ -84,8 +82,7 @@ public class Utils {
             format = new SimpleDateFormat("MM/dd/yyyy hh:mm aa");
             format.setTimeZone(Calendar.getInstance().getTimeZone());
             return format.format(utcDate);
-        }
-        catch (ParseException e) {
+        } catch (ParseException e) {
             return null;
         }
     }

@@ -3,7 +3,6 @@ package bachmanity.prank_call.API.Services.Callbacks;
 import org.greenrobot.eventbus.EventBus;
 
 import bachmanity.prank_call.Misc.APIConstants;
-import bachmanity.prank_call.Misc.SPSingleton;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
