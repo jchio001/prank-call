@@ -53,7 +53,7 @@ public class HomeFragment extends Fragment {
         EventBus.getDefault().register(this);
         ButterKnife.bind(this, rootView);
         verifyText.setVisibility((Utils.getAccountStatus(getContext()) &&
-                Utils.getId(getContext()) != -1) ? View.VISIBLE : View.GONE);
+                Utils.getId(getContext()) != -1) ? View.GONE : View.VISIBLE);
         return rootView;
     }
 
@@ -120,7 +120,7 @@ public class HomeFragment extends Fragment {
                 R.string.verify_text, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        String code = ((TextView) dialogView.findViewById(R.id.verify_edit_text))
+                        final String code = ((TextView) dialogView.findViewById(R.id.verify_edit_text))
                                 .getText().toString();
 
                         if (code.length() < 4) {
@@ -133,13 +133,35 @@ public class HomeFragment extends Fragment {
                         progressDialog.setCancelable(false);
                         progressDialog.setMessage(getString(R.string.loading));
                         progressDialog.show();
+                        progressDialog.setContentView(R.layout.adview_for_dialog);
 
-                        RetrofitSingleton.getInstance().getUserService()
-                                .activateAccount(
-                                  new ActivationBundle(Utils.getPhoneNumber(getContext()),
-                                          Utils.getPassword(getContext()),
-                                          Integer.parseInt(code))
-                                ).enqueue(new ActivationCallback());
+                        AdView dialogAd = (AdView) progressDialog.findViewById(R.id.dialog_adview);
+                        AdRequest adRequest = new AdRequest.Builder().build();
+                        dialogAd.loadAd(adRequest);
+                        dialogAd.setAdListener(new AdListener() {
+                            @Override
+                            public void onAdLoaded() {
+                                super.onAdLoaded();
+                                Handler handler = new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    public void run() {
+                                        RetrofitSingleton.getInstance().getUserService()
+                                                .activateAccount(
+                                                        new ActivationBundle(Utils.getPhoneNumber(getContext()),
+                                                                Utils.getPassword(getContext()),
+                                                                Integer.parseInt(code))
+                                                ).enqueue(new ActivationCallback());
+                                    }
+                                }, 2000);
+                            }
+
+                            @Override
+                            public void onAdFailedToLoad(int errorcode) {
+                                progressDialog.dismiss();
+                                SnackbarHelper.showSnackbar(getContext(), parent, getString(R.string.call_not_made));
+                                super.onAdFailedToLoad(errorcode);
+                            }
+                        });
                     }
 
                 });
@@ -161,7 +183,7 @@ public class HomeFragment extends Fragment {
             HistorySingleton.getInstance().setLoad(true);
         } else if(resp.equals(Constants.LOGIN_EVENT)) {
             verifyText.setVisibility((Utils.getAccountStatus(getContext()) &&
-                    Utils.getId(getContext()) != -1) ? View.VISIBLE : View.GONE);
+                    Utils.getId(getContext()) != -1) ? View.GONE : View.VISIBLE);
         } else if (resp.equals(Constants.LOGOUT_EVENT)) {
             verifyText.setVisibility(View.GONE);
         }
