@@ -15,15 +15,14 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-//for initially loading/refreshing history
-public class HistoryCallback implements Callback<List<History>> {
-
+//for loading in more pages
+public class HistoryPageCallback implements Callback<List<History>> {
     @Override
     public void onResponse(Call<List<History>> call, Response<List<History>> resp) {
         System.out.println(resp.code());
         switch (resp.code()) {
             case APIConstants.HTTP_STATUS_OK:
-                EventBus.getDefault().post(new HistoryPageEvent(Constants.REFRESH_TAG,
+                EventBus.getDefault().post(new HistoryPageEvent(Constants.NEW_PAGE_TAG,
                         resp.body()));
                 break;
             default:
@@ -41,5 +40,4 @@ public class HistoryCallback implements Callback<List<History>> {
         System.out.println(result.toString());
         EventBus.getDefault().post(Constants.HISTORY_FAILED);
     }
-
 }

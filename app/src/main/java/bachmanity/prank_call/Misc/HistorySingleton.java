@@ -35,6 +35,12 @@ public class HistorySingleton {
 
     //when cached history size < 10 and making a call locally
     public List<History> addHistoryPage(List<History> historyPage) {
+        int lastIndex = historyList.size() -1;
+
+        if (historyList.get(lastIndex).getTimestamp().equals("dud")) {
+            historyList.remove(historyList.size() - 1);
+        }
+
         historyList.addAll(historyPage);
         return this.historyList;
     }
@@ -43,6 +49,10 @@ public class HistorySingleton {
         historyList.clear();
         historyList.addAll(historyPage);
         return this.historyList;
+    }
+
+    public boolean loadMore() {
+        return historyList.get(historyList.size() - 1).getTimestamp().equals("dud");
     }
 
     public void deleteHistory() {

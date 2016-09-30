@@ -78,48 +78,49 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_layout, new HomeFragment(),
                 Constants.HOME_TAG).commit();
 
-        //EventBus.getDefault().register(this);
-
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setCancelable(false);
-        progressDialog.setMessage(getString(R.string.loading));
-        progressDialog.show();
-
         final Context context = this;
-        AdRequest adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
-        adView.setAdListener(new AdListener() {
-            @Override
-            public void onAdLoaded() {
-                super.onAdLoaded();
-                progressDialog.dismiss();
-                if (!SPSingleton.getInstance(context).getSp().getBoolean(Constants.FIRST_TIME, false)) {
-                    SPSingleton.getInstance(context).getSp().edit().putBoolean(Constants.FIRST_TIME, true).commit();
-                    Intent intent = new Intent(context, RegisterActivity.class);
-                    intent.putExtra(Constants.FIRST_TIME, true);
-                    startActivityForResult(intent, 1);
-                }
-            }
-
-            @Override
-            public void onAdFailedToLoad(int errorCode) {
-                progressDialog.dismiss();
-                super.onAdFailedToLoad(errorCode);
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setCancelable(false);
-                builder.setTitle(getString(R.string.ad_dialog_title))
-                        .setMessage(getString(R.string.ad_dailog_msg));
-
-                builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        finish();
+        if (!Utils.getAccountSubStatus(this)) {
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setCancelable(false);
+            progressDialog.setMessage(getString(R.string.loading));
+            progressDialog.show();
+            AdRequest adRequest = new AdRequest.Builder().build();
+            adView.loadAd(adRequest);
+            adView.setAdListener(new AdListener() {
+                @Override
+                public void onAdLoaded() {
+                    super.onAdLoaded();
+                    progressDialog.dismiss();
+                    if (!SPSingleton.getInstance(context).getSp().getBoolean(Constants.FIRST_TIME, false)) {
+                        SPSingleton.getInstance(context).getSp().edit().putBoolean(Constants.FIRST_TIME, true).commit();
+                        Intent intent = new Intent(context, RegisterActivity.class);
+                        intent.putExtra(Constants.FIRST_TIME, true);
+                        startActivityForResult(intent, 1);
                     }
-                });
+                }
 
-                builder.show();
-            }
+                @Override
+                public void onAdFailedToLoad(int errorCode) {
+                    progressDialog.dismiss();
+                    super.onAdFailedToLoad(errorCode);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setCancelable(false);
+                    builder.setTitle(getString(R.string.ad_dialog_title))
+                            .setMessage(getString(R.string.ad_dailog_msg));
 
-        });
+                    builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            finish();
+                        }
+                    });
+
+                    builder.show();
+                }
+
+            });
+        } else {
+            adView.setVisibility(View.GONE);
+        }
 
         if (Utils.getId(this) != -1) {
             loginText.setText(getString(R.string.logout));
@@ -210,6 +211,7 @@ public class MainActivity extends AppCompatActivity {
                 if (id != -1) {
                     Utils.saveId(id, this);
                     Utils.saveAccountStatus(intent.getBooleanExtra(Constants.ACCOUNT_ACTIVE, false), this);
+                    Utils.saveAccountSubStatus(intent.getBooleanExtra(Constants.ACCOUNT_SUBBED, false), this);
                     Utils.savePhoneNumber(intent.getStringExtra(Constants.NUMBER), this);
                     Utils.savePassword(intent.getStringExtra(Constants.PASSWORD), this);
                     returnToHomeFragment();
@@ -223,7 +225,9 @@ public class MainActivity extends AppCompatActivity {
     public void returnToHomeFragment() {
         Fragment myFragment = getSupportFragmentManager().findFragmentByTag(Constants.HOME_TAG);
         if (myFragment != null) {
-            return;
+            if (Utils.getAccountSubStatus(this)) {
+                adView.setVisibility(View.GONE);
+            }
         } else {
             if (lastSelectedView != null && firstListElem != null) {
                 lastSelectedView.setBackgroundColor(this.getResources().getColor(R.color.white));

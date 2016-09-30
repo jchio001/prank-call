@@ -6,13 +6,20 @@
     android:layout_height="match_parent"
     tools:context="bachmanity.prank_call.Fragments.HistoryFragment">
 
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/history_swipe_layout"
         android:visibility="gone"
-        android:id="@+id/history_list_view"
-        android:layout_alignParentTop="true">
-    </ListView>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/history_list_view"
+            android:layout_alignParentTop="true">
+        </ListView>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <TextView
         android:layout_width="wrap_content"
@@ -20,7 +27,7 @@
         android:visibility="gone"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:id="@+id/history_text_view"
-        android:layout_below="@+id/history_list_view"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

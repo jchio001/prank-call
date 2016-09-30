@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-import bachmanity.prank_call.Misc.NavDrawerViewHolder;
+import bachmanity.prank_call.Misc.ViewHolders.NavDrawerViewHolder;
 import bachmanity.prank_call.R;
 
 public class NavDrawerAdapter extends BaseAdapter {

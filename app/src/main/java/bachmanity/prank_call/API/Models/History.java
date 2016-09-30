@@ -20,6 +20,12 @@ public class History {
     @Expose
     private String timestamp;
 
+    public History(String from, String to, String timestamp) {
+        this.from = from;
+        this.to = to;
+        this.timestamp = timestamp;
+    }
+
     public int getId() {
         return id;
     }

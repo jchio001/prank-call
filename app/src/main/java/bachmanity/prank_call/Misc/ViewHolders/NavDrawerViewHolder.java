@@ -1,4 +1,4 @@
-package bachmanity.prank_call.Misc;
+package bachmanity.prank_call.Misc.ViewHolders;
 
 import android.view.View;
 import android.widget.TextView;

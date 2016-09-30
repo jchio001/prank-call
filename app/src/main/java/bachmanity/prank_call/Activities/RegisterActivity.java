@@ -128,6 +128,7 @@ public class RegisterActivity extends AppCompatActivity {
             Intent intent = new Intent();
             intent.putExtra(Constants.ID, id);
             intent.putExtra(Constants.ACCOUNT_ACTIVE, resp.isAccount_active());
+            intent.putExtra(Constants.ACCOUNT_SUBBED, resp.isAccount_subbed());
             intent.putExtra(Constants.NUMBER, number);
             intent.putExtra(Constants.PASSWORD, encryptedPass);
             setResult(RESULT_OK, intent);

@@ -77,36 +77,44 @@ public class HomeFragment extends Fragment {
         progressDialog.setCancelable(false);
         progressDialog.setMessage(getString(R.string.calling));
 
+        numberToCall.getText().clear();
         Utils.hideKeyboard(parent, getContext());
         progressDialog.show();
-        progressDialog.setContentView(R.layout.adview_for_dialog);
         HistorySingleton.getInstance().setLoad(true);
+        if (!Utils.getAccountSubStatus(getContext())) {
+            progressDialog.setContentView(R.layout.adview_for_dialog);
 
-        AdView dialogAd = (AdView) progressDialog.findViewById(R.id.dialog_adview);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        dialogAd.loadAd(adRequest);
-        dialogAd.setAdListener(new AdListener() {
-            @Override
-            public void onAdLoaded() {
-                super.onAdLoaded();
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    public void run() {
-                        CallBundle callBundle = new CallBundle(number, Utils.getId(getContext()), Utils.getPassword(getContext()));
-                        RetrofitSingleton.getInstance().getMatchingService()
-                                .call(callBundle).
-                                enqueue(new CallCallback());
-                    }
-                }, 2000);
-            }
+            AdView dialogAd = (AdView) progressDialog.findViewById(R.id.dialog_adview);
+            AdRequest adRequest = new AdRequest.Builder().build();
+            dialogAd.loadAd(adRequest);
+            dialogAd.setAdListener(new AdListener() {
+                @Override
+                public void onAdLoaded() {
+                    super.onAdLoaded();
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            CallBundle callBundle = new CallBundle(number, Utils.getId(getContext()), Utils.getPassword(getContext()));
+                            RetrofitSingleton.getInstance().getMatchingService()
+                                    .call(callBundle).
+                                    enqueue(new CallCallback());
+                        }
+                    }, 2000);
+                }
 
-            @Override
-            public void onAdFailedToLoad(int errorcode) {
-                progressDialog.dismiss();
-                SnackbarHelper.showSnackbar(getContext(), parent, getString(R.string.call_not_made));
-                super.onAdFailedToLoad(errorcode);
-            }
-        });
+                @Override
+                public void onAdFailedToLoad(int errorcode) {
+                    progressDialog.dismiss();
+                    SnackbarHelper.showSnackbar(getContext(), parent, getString(R.string.call_not_made));
+                    super.onAdFailedToLoad(errorcode);
+                }
+            });
+        } else {
+            CallBundle callBundle = new CallBundle(number, Utils.getId(getContext()), Utils.getPassword(getContext()));
+            RetrofitSingleton.getInstance().getMatchingService()
+                    .call(callBundle).
+                    enqueue(new CallCallback());
+        }
     }
 
     @OnClick(R.id.verify_text)

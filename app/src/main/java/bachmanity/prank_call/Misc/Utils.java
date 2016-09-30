@@ -97,6 +97,8 @@ public class Utils {
         sp.edit().remove(Constants.ID).commit();
         sp.edit().remove(Constants.NUMBER).commit();
         sp.edit().remove(Constants.PASSWORD).commit();
+        sp.edit().remove(Constants.ACCOUNT_ACTIVE).commit();
+        sp.edit().remove(Constants.ACCOUNT_SUBBED).commit();
         HistorySingleton history = HistorySingleton.getInstance();
         history.setLoad(true);
         history.deleteHistory();
@@ -132,5 +134,13 @@ public class Utils {
 
     public static boolean getAccountStatus(Context context) {
         return SPSingleton.getInstance(context).getSp().getBoolean(Constants.ACCOUNT_ACTIVE, false);
+    }
+
+    public static void saveAccountSubStatus(boolean isSubbed, Context context) {
+        SPSingleton.getInstance(context).getSp().edit().putBoolean(Constants.ACCOUNT_SUBBED, isSubbed).commit();
+    }
+
+    public static boolean getAccountSubStatus(Context context) {
+        return SPSingleton.getInstance(context).getSp().getBoolean(Constants.ACCOUNT_SUBBED, false);
     }
 }
