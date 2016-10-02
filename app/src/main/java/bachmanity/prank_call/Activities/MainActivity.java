@@ -129,6 +129,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onDestroy() {
+        if (adView != null) {
+            adView.removeAllViews();
+            adView.setAdListener(null);
+            adView.destroy();
+        }
         EventBus.getDefault().unregister(this);
         super.onDestroy();
     }
@@ -199,6 +204,43 @@ public class MainActivity extends AppCompatActivity {
             v.setText(getString(R.string.login));
             returnToHomeFragment();
             EventBus.getDefault().post(Constants.LOGOUT_EVENT);
+
+            if (adView.getVisibility() == View.GONE) {
+                adView.setVisibility(View.VISIBLE);
+                final Context context = this;
+                progressDialog = new ProgressDialog(this);
+                progressDialog.setCancelable(false);
+                progressDialog.setMessage(getString(R.string.loading));
+                progressDialog.show();
+                AdRequest adRequest = new AdRequest.Builder().build();
+                adView.loadAd(adRequest);
+                adView.setAdListener(new AdListener() {
+                    @Override
+                    public void onAdLoaded() {
+                        super.onAdLoaded();
+                        progressDialog.dismiss();
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(int errorCode) {
+                        progressDialog.dismiss();
+                        super.onAdFailedToLoad(errorCode);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                        builder.setCancelable(false);
+                        builder.setTitle(getString(R.string.ad_dialog_title))
+                                .setMessage(getString(R.string.ad_dailog_msg));
+
+                        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                finish();
+                            }
+                        });
+
+                        builder.show();
+                    }
+
+                });
+            }
         }
     }
 
@@ -209,9 +251,18 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 int id = intent.getIntExtra(Constants.ID, -1);
                 if (id != -1) {
+
                     Utils.saveId(id, this);
                     Utils.saveAccountStatus(intent.getBooleanExtra(Constants.ACCOUNT_ACTIVE, false), this);
-                    Utils.saveAccountSubStatus(intent.getBooleanExtra(Constants.ACCOUNT_SUBBED, false), this);
+
+                    boolean isSubbed = intent.getBooleanExtra(Constants.ACCOUNT_SUBBED, false);
+                    Utils.saveAccountSubStatus(isSubbed, this);
+                    adView.setVisibility(isSubbed ? View.GONE : View.VISIBLE);
+                    if (isSubbed && adView != null) {
+                        adView.setAdListener(null);
+                        adView.destroy();
+                    }
+
                     Utils.savePhoneNumber(intent.getStringExtra(Constants.NUMBER), this);
                     Utils.savePassword(intent.getStringExtra(Constants.PASSWORD), this);
                     returnToHomeFragment();

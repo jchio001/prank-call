@@ -106,7 +106,6 @@ public class HistoryFragment extends Fragment {
                             return;
                         }
 
-                        System.out.println(timeInMs);
                         RetrofitSingleton.getInstance().getMatchingService()
                                 .getHistory(from, to, timeInMs , APIConstants.LOAD_MODE)
                                 .enqueue(new HistoryPageCallback());
@@ -115,12 +114,14 @@ public class HistoryFragment extends Fragment {
             }
         });
 
-        AdView ad = (AdView) getActivity().findViewById(R.id.adView);
-        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) historyMainLayout.getLayoutParams();
-        params.setMargins(0, 0, 0, ad.getHeight());
-        //params.setMar = parent.getHeight() - ad.getHeight();
-        historyMainLayout.setLayoutParams(params);
-        historyMainLayout.requestLayout();
+        if (!Utils.getAccountSubStatus(getContext())) {
+            AdView ad = (AdView) getActivity().findViewById(R.id.adView);
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) historyMainLayout.getLayoutParams();
+            params.setMargins(0, 0, 0, ad.getHeight());
+            //params.setMar = parent.getHeight() - ad.getHeight();
+            historyMainLayout.setLayoutParams(params);
+            historyMainLayout.requestLayout();
+        }
 
         if (Utils.getId(getContext()) != -1) {
             loadFirstPage();
