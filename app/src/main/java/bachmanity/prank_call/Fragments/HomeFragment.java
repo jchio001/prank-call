@@ -80,7 +80,7 @@ public class HomeFragment extends Fragment {
         numberToCall.getText().clear();
         Utils.hideKeyboard(parent, getContext());
         progressDialog.show();
-        HistorySingleton.getInstance().setLoad(true);
+        HistorySingleton.getInstance().setLoadFromServer(true);
         if (!Utils.getAccountSubStatus(getContext())) {
             progressDialog.setContentView(R.layout.adview_for_dialog);
 
@@ -189,7 +189,7 @@ public class HomeFragment extends Fragment {
         if (resp.equals(Constants.MADE_CALL)) {
             progressDialog.dismiss();
             SnackbarHelper.showSnackbar(getContext(), parent, getString(R.string.call_made));
-            HistorySingleton.getInstance().setLoad(true);
+            HistorySingleton.getInstance().setLoadFromServer(true);
         } else if (resp.equals(Constants.LOGIN_EVENT)) {
             verifyText.setVisibility((Utils.getAccountStatus(getContext()) &&
                     Utils.getId(getContext()) != -1) ? View.GONE : View.VISIBLE);

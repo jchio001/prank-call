@@ -100,7 +100,7 @@ public class Utils {
         sp.edit().remove(Constants.ACCOUNT_ACTIVE).commit();
         sp.edit().remove(Constants.ACCOUNT_SUBBED).commit();
         HistorySingleton history = HistorySingleton.getInstance();
-        history.setLoad(true);
+        history.setLoadFromServer(true);
         history.deleteHistory();
     }
 

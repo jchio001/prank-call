@@ -14,6 +14,7 @@ import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -22,6 +23,8 @@ import com.google.android.gms.ads.AdView;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,7 +54,6 @@ public class HistoryFragment extends Fragment {
     ProgressDialog progressDialog;
     HistoryAdapter historyAdapter;
     int lastSelected = 0;
-    int offset = 10;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -85,19 +87,31 @@ public class HistoryFragment extends Fragment {
             @Override
             public void onScroll(AbsListView absListView, int firstVisibleItem,
                                  int visibleItemCount, int totalItemCount) {
-                /*int lastVisibleIndex = firstVisibleItem + visibleItemCount;
-                if (lastVisibleIndex == totalItemCount && totalItemCount != 0
-                        && HistorySingleton.getInstance().loadMore()) {
+                int lastVisibleIndex = firstVisibleItem + visibleItemCount - 1;
+                if ((lastVisibleIndex == (totalItemCount - 1)) && totalItemCount != 0 &&
+                        historyAdapter.getItem(lastVisibleIndex).getTimestamp().equals("dud")) {
                     if (lastSelected != lastVisibleIndex) {
+                        lastSelected = lastVisibleIndex;
+
                         final String from, to;
                         from = Utils.getPhoneNumber(getActivity());
                         to = from;
 
-                        //RETROFIT STUFF
+                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+                        long timeInMs;
+                        try {
+                            timeInMs = format.parse(historyAdapter
+                                    .getItem(lastVisibleIndex - 2).getTimestamp()).getTime();
+                        } catch (ParseException e) {
+                            return;
+                        }
 
-                        lastSelected = lastVisibleIndex;
+                        System.out.println(timeInMs);
+                        RetrofitSingleton.getInstance().getMatchingService()
+                                .getHistory(from, to, timeInMs , APIConstants.LOAD_MODE)
+                                .enqueue(new HistoryPageCallback());
                     }
-                }*/
+                }
             }
         });
 
@@ -109,7 +123,7 @@ public class HistoryFragment extends Fragment {
         historyMainLayout.requestLayout();
 
         if (Utils.getId(getContext()) != -1) {
-            makeAPICall();
+            loadFirstPage();
         } else {
             historyTextView.setText(getString(R.string.login_for_history));
             historyTextView.setVisibility(View.VISIBLE);
@@ -120,17 +134,30 @@ public class HistoryFragment extends Fragment {
 
     @Override
     public void onDestroy() {
+        HistorySingleton.getInstance().setLoadFromServer(false);
+        HistorySingleton.getInstance().cacheHistoryPage(historyAdapter.getFirstHistoryPage());
         EventBus.getDefault().unregister(this);
         super.onDestroy();
     }
 
-    public void makeAPICall() {
+    public void loadFromCache() {
+        historyAdapter.appendHistories(HistorySingleton.getInstance().getHistoryList());
+        historySwipeLayout.setVisibility(View.VISIBLE);
+    }
+
+    public void loadFirstPage() {
         final String from, to;
         from = Utils.getPhoneNumber(getActivity());
         to = from;
 
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setCancelable(false);
+
+        if (!HistorySingleton.getInstance().isLoadFromServer() && !HistorySingleton.getInstance().isEmpty()) {
+            loadFromCache();
+            return;
+        }
+
         if (!Utils.getAccountSubStatus(getContext())) {
             progressDialog.show();
             progressDialog.setContentView(R.layout.adview_for_dialog);
@@ -176,7 +203,6 @@ public class HistoryFragment extends Fragment {
         if (historyPageEvent.getEventType().equals(Constants.REFRESH_TAG)) {
             historyAdapter.prependHistories(newHistories);
         } else {
-            offset += 10;
             historyAdapter.appendHistories(newHistories);
         }
         historySwipeLayout.setVisibility(View.VISIBLE);

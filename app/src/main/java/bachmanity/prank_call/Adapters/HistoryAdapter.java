@@ -16,7 +16,7 @@ import bachmanity.prank_call.R;
 
 public class HistoryAdapter extends BaseAdapter {
     private List<History> histories;
-    Context context;
+    private Context context;
 
     public HistoryAdapter(List<History> histories, Context context) {
         this.histories = histories;
@@ -39,12 +39,22 @@ public class HistoryAdapter extends BaseAdapter {
     }
 
     public void appendHistories(List<History> historyPage) {
+        if (histories.size() != 0) {
+            History lastHistory = histories.get(histories.size() - 1);
+            if (lastHistory.getTimestamp().equals("dud")) {
+                histories.remove(histories.size() - 1);
+            }
+        }
+
         histories.addAll(historyPage);
-        System.out.println(historyPage.size());
         if (historyPage.size() == APIConstants.PAGE_SIZE) {
             histories.add(new History("", "", "dud"));
         }
         notifyDataSetChanged();
+    }
+
+    public List<History> getFirstHistoryPage() {
+        return histories.subList(0, Math.min(histories.size(), APIConstants.PAGE_SIZE));
     }
 
     public void prependHistories(List<History> historyPage) {
