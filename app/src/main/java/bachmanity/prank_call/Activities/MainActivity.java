@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
             progressDialog.setCancelable(false);
             progressDialog.setMessage(getString(R.string.loading));
             progressDialog.show();
+            adView.resume();
             AdRequest adRequest = new AdRequest.Builder().build();
             adView.loadAd(adRequest);
             adView.setAdListener(new AdListener() {
@@ -119,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
 
             });
         } else {
+            //adViewDisabled = true;
             adView.setVisibility(View.GONE);
         }
 
@@ -207,6 +209,7 @@ public class MainActivity extends AppCompatActivity {
 
             if (adView.getVisibility() == View.GONE) {
                 adView.setVisibility(View.VISIBLE);
+
                 final Context context = this;
                 progressDialog = new ProgressDialog(this);
                 progressDialog.setCancelable(false);
@@ -259,8 +262,9 @@ public class MainActivity extends AppCompatActivity {
                     Utils.saveAccountSubStatus(isSubbed, this);
                     adView.setVisibility(isSubbed ? View.GONE : View.VISIBLE);
                     if (isSubbed && adView != null) {
+                        //adViewDisabled = true;
                         adView.setAdListener(null);
-                        adView.destroy();
+                        adView.pause();
                     }
 
                     Utils.savePhoneNumber(intent.getStringExtra(Constants.NUMBER), this);
