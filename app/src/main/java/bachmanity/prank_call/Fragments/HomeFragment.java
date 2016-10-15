@@ -1,8 +1,11 @@
 package bachmanity.prank_call.Fragments;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
@@ -13,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -27,6 +31,8 @@ import bachmanity.prank_call.API.RetrofitSingleton;
 import bachmanity.prank_call.API.Services.Callbacks.ActivationCallback;
 import bachmanity.prank_call.API.Services.Callbacks.CallCallback;
 import bachmanity.prank_call.Misc.Constants;
+import bachmanity.prank_call.Misc.ContactsBundle;
+import bachmanity.prank_call.Misc.ContactsSingleton;
 import bachmanity.prank_call.Misc.HistorySingleton;
 import bachmanity.prank_call.Misc.SnackbarHelper;
 import bachmanity.prank_call.Misc.Utils;
@@ -64,6 +70,46 @@ public class HomeFragment extends Fragment {
         super.onDestroy();
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+        if (requestCode == Constants.PERMISSIONS_REQUEST_READ_CONTACTS) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                fillEditTextWithRandom();
+            } else {
+                SnackbarHelper.showSnackbar(getContext(), parent, getString(R.string.permission_denied));
+            }
+        }
+    }
+
+    @OnClick(R.id.random)
+    public void setRandom() {
+//        progressDialog = new ProgressDialog(getContext());
+//        progressDialog.setCancelable(false);
+//        progressDialog.setMessage(getString(R.string.calling));
+        Utils.hideKeyboard(parent, getContext());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                getContext().checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, Constants.PERMISSIONS_REQUEST_READ_CONTACTS);
+            //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
+        } else {
+            fillEditTextWithRandom();
+        }
+        //progressDialog.show();
+        //call(ContactsSingleton.getInstance(getContext()).getRandomContact().getContactNum());
+    }
+
+    public void fillEditTextWithRandom() {
+        ContactsBundle randomContact = ContactsSingleton.getInstance(getContext()).getRandomContact();
+        if (randomContact != null) {
+            String randomNumber = randomContact.getContactNum();
+            numberToCall.setText(randomNumber);
+            numberToCall.setSelection(randomNumber.length());
+        } else {
+            SnackbarHelper.showSnackbar(getContext(), parent, getString(R.string.no_contacts));
+        }
+    }
+
     @OnClick(R.id.call)
     public void onCall() {
         final String number = numberToCall.getText().toString();
@@ -73,13 +119,16 @@ public class HomeFragment extends Fragment {
             return;
         }
 
+        numberToCall.getText().clear();
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setCancelable(false);
         progressDialog.setMessage(getString(R.string.calling));
-
-        numberToCall.getText().clear();
         Utils.hideKeyboard(parent, getContext());
         progressDialog.show();
+        call(number);
+    }
+
+    public void call(final String number) {
         HistorySingleton.getInstance().setLoadFromServer(true);
         if (!Utils.getAccountSubStatus(getContext())) {
             progressDialog.setContentView(R.layout.adview_for_dialog);

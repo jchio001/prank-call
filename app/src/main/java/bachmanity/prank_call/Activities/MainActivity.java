@@ -4,7 +4,9 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
@@ -25,6 +27,8 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
 import org.greenrobot.eventbus.EventBus;
+
+import java.util.List;
 
 import bachmanity.prank_call.Adapters.NavDrawerAdapter;
 import bachmanity.prank_call.Fragments.HistoryFragment;
@@ -77,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
 
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_layout, new HomeFragment(),
                 Constants.HOME_TAG).commit();
+
 
         final Context context = this;
         if (!Utils.getAccountSubStatus(this)) {
@@ -196,12 +201,11 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.login_text)
     public void onClick(TextView v) {
+        drawer.closeDrawer(GravityCompat.START);
         if (v.getText().toString().equals(getString(R.string.login))) {
-            drawer.closeDrawer(GravityCompat.START);
             Intent intent = new Intent(this, RegisterActivity.class);
             startActivityForResult(intent, 1);
         } else if (v.getText().toString().equals(getString(R.string.logout))) {
-            drawer.closeDrawer(GravityCompat.START);
             Utils.logout(this);
             v.setText(getString(R.string.login));
             returnToHomeFragment();
@@ -275,6 +279,14 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    public List<String> cacheContacts() {
+        Cursor cursor = getContentResolver().query(ContactsContract.
+                CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
+        int nameId = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
+        int phoneNumberId = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+        return null;
     }
 
     public void returnToHomeFragment() {

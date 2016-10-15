@@ -9,6 +9,9 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -102,6 +105,13 @@ public class Utils {
         HistorySingleton history = HistorySingleton.getInstance();
         history.setLoadFromServer(true);
         history.deleteHistory();
+    }
+
+    public static void printStackTrace(Exception e) {
+        final Writer result = new StringWriter();
+        final PrintWriter printWriter = new PrintWriter(result);
+        e.printStackTrace(printWriter);
+        System.out.println(result.toString());
     }
 
     public static int getId(Context context) {

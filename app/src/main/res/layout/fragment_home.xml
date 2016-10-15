@@ -50,4 +50,13 @@
         android:layout_below="@+id/phoneNumEditText"
         android:text="@string/call" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/random"
+        android:id="@+id/random"
+        android:layout_alignBottom="@+id/call"
+        android:layout_toLeftOf="@+id/call"
+        android:layout_toStartOf="@+id/call" />
+
 </RelativeLayout>

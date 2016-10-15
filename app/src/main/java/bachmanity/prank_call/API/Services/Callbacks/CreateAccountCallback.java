@@ -35,5 +35,4 @@ public class CreateAccountCallback implements Callback<LoginRespBundle> {
         EventBus.getDefault().post("ERROR");
     }
 
-
 }

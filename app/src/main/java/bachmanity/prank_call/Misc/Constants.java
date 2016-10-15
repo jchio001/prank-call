@@ -33,4 +33,6 @@ public class Constants {
     public static final String HISTORY_FAILED = "History failed";
 
     public static final String BASE_URL = "http://prank-call.herokuapp.com";
+
+    public static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
 }
