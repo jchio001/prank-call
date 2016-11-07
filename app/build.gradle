@@ -8,8 +8,8 @@ android {
         applicationId "bachmanity.prank_call"
         minSdkVersion 16
         targetSdkVersion 24
-        versionCode 3
-        versionName "1.1.1"
+        versionCode 4
+        versionName "1.1.2"
     }
     buildTypes {
         release {

@@ -22,15 +22,13 @@ import bachmanity.prank_call.R;
 public class AutoCompleteAdapter extends ArrayAdapter<ContactsBundle> {
     private Context context;
     private ArrayList<ContactsBundle> contacts;
-    private ArrayList<ContactsBundle> allContacts;
     private ArrayList<ContactsBundle> suggestions;
 
     @SuppressWarnings("unchecked")
     public AutoCompleteAdapter(Context context, int viewResourceId, ArrayList<ContactsBundle> contacts) {
-        super(context, viewResourceId, contacts);
+        super(context, viewResourceId, new ArrayList<ContactsBundle>());
         this.context = context;
-        this.contacts = contacts;
-        this.allContacts = (ArrayList<ContactsBundle>) contacts.clone();
+        this.contacts = (ArrayList<ContactsBundle>) contacts.clone();
         this.suggestions = new ArrayList<>();
     }
 
@@ -52,7 +50,7 @@ public class AutoCompleteAdapter extends ArrayAdapter<ContactsBundle> {
         }
 
         //USE BUILT IN GETITEM() METHOD
-        holder.textView.setText(contacts.get(position).getContactNum());
+        holder.textView.setText(getItem(position).getContactNum());
 
         return convertView;
     }
@@ -71,10 +69,10 @@ public class AutoCompleteAdapter extends ArrayAdapter<ContactsBundle> {
         protected Filter.FilterResults performFiltering(CharSequence constraint){
             if (constraint != null) {
                 suggestions.clear();
-                for (int i = 0, j = 0; i < allContacts.size() && j < 5; i++) {
-                    if (allContacts.get(i).getContactNum().toLowerCase()
+                for (int i = 0, j = 0; i < contacts.size() && j < 5; i++) {
+                    if (contacts.get(i).getContactNum().toLowerCase()
                             .contains(constraint.toString().toLowerCase())) {
-                        suggestions.add(allContacts.get(i));
+                        suggestions.add(contacts.get(i));
                         j++;
                     }
                 }
