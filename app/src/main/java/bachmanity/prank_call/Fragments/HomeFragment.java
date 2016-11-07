@@ -13,10 +13,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -25,11 +24,14 @@ import com.google.android.gms.ads.AdView;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.ArrayList;
+
 import bachmanity.prank_call.API.Models.ActivationBundle;
 import bachmanity.prank_call.API.Models.CallBundle;
 import bachmanity.prank_call.API.RetrofitSingleton;
 import bachmanity.prank_call.API.Services.Callbacks.ActivationCallback;
 import bachmanity.prank_call.API.Services.Callbacks.CallCallback;
+import bachmanity.prank_call.Adapters.AutoCompleteAdapter;
 import bachmanity.prank_call.Misc.Constants;
 import bachmanity.prank_call.Misc.ContactsBundle;
 import bachmanity.prank_call.Misc.ContactsSingleton;
@@ -42,13 +44,15 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class HomeFragment extends Fragment {
-    @Bind(R.id.phoneNumEditText) EditText numberToCall;
+    @Bind(R.id.phoneNumACTV) AutoCompleteTextView numberToCall;
     @Bind(R.id.call) Button call;
     @Bind(R.id.verify_text) TextView verifyText;
 
     CoordinatorLayout parent;
     ProgressDialog progressDialog;
     AlertDialog.Builder verifyDialogBuilder;
+    AutoCompleteAdapter adapter;
+    boolean askPermissionForAC = true;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parentViewGroup,
@@ -57,6 +61,8 @@ public class HomeFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_home, parentViewGroup, false);
         EventBus.getDefault().register(this);
         ButterKnife.bind(this, rootView);
+        setUpAC();
+
         verifyText.setVisibility(
                 ((Utils.getAccountStatus(getContext()) &&
                         Utils.getId(getContext()) != -1) ||
@@ -75,7 +81,14 @@ public class HomeFragment extends Fragment {
                                            int[] grantResults) {
         if (requestCode == Constants.PERMISSIONS_REQUEST_READ_CONTACTS) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                fillEditTextWithRandom();
+                if (askPermissionForAC) {
+                    adapter = new AutoCompleteAdapter(getActivity(), R.layout.simple_list_item,
+                            ContactsSingleton.getInstance(getActivity()).getContacts());
+                    numberToCall.setAdapter(adapter);
+                    numberToCall.setThreshold(1);
+                } else {
+                    fillEditTextWithRandom();
+                }
             } else {
                 SnackbarHelper.showSnackbar(getContext(), parent, getString(R.string.permission_denied));
             }
@@ -84,9 +97,8 @@ public class HomeFragment extends Fragment {
 
     @OnClick(R.id.random)
     public void setRandom() {
-//        progressDialog = new ProgressDialog(getContext());
-//        progressDialog.setCancelable(false);
-//        progressDialog.setMessage(getString(R.string.calling));
+        askPermissionForAC = false;
+        System.out.println(askPermissionForAC);
         Utils.hideKeyboard(parent, getContext());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
                 getContext().checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
@@ -95,17 +107,34 @@ public class HomeFragment extends Fragment {
         } else {
             fillEditTextWithRandom();
         }
-        //progressDialog.show();
-        //call(ContactsSingleton.getInstance(getContext()).getRandomContact().getContactNum());
+    }
+
+    @SuppressWarnings("unchecked")
+    public void setUpAC() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                getContext().checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, Constants.PERMISSIONS_REQUEST_READ_CONTACTS);
+            //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
+        } else {
+            adapter = new AutoCompleteAdapter(getActivity(), R.layout.simple_list_item,
+                    ContactsSingleton.getInstance(getActivity()).getContacts());
+            numberToCall.setAdapter(adapter);
+            numberToCall.setThreshold(1);
+        }
     }
 
     public void fillEditTextWithRandom() {
-        ContactsBundle randomContact = ContactsSingleton.getInstance(getContext()).getRandomContact();
+        System.out.println("random");
+        ContactsBundle randomContact = ContactsSingleton.getInstance(getActivity())
+                .getRandomContact();
         if (randomContact != null) {
             String randomNumber = randomContact.getContactNum();
+            System.out.println(randomNumber);
             numberToCall.setText(randomNumber);
             numberToCall.setSelection(randomNumber.length());
+            numberToCall.dismissDropDown();
         } else {
+            System.out.println("failure");
             SnackbarHelper.showSnackbar(getContext(), parent, getString(R.string.no_contacts));
         }
     }

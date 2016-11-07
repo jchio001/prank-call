@@ -27,6 +27,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimeZone;
 
 import bachmanity.prank_call.API.Models.History;
 import bachmanity.prank_call.API.Models.HistoryPageEvent;
@@ -98,13 +99,16 @@ public class HistoryFragment extends Fragment {
                         to = from;
 
                         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+                        format.setTimeZone(TimeZone.getTimeZone("UTC"));
                         long timeInMs;
                         try {
                             timeInMs = format.parse(historyAdapter
-                                    .getItem(lastVisibleIndex - 2).getTimestamp()).getTime();
+                                    .getItem(lastSelected - 1).getTimestamp()).getTime();
                         } catch (ParseException e) {
                             return;
                         }
+
+                        System.out.println(Long.toString(timeInMs));
 
                         RetrofitSingleton.getInstance().getMatchingService()
                                 .getHistory(from, to, timeInMs , APIConstants.LOAD_MODE)
